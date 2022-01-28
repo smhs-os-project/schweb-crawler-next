@@ -13,3 +13,6 @@ apify_storage
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+.DS_Store
+reverse_proxy/caddy
