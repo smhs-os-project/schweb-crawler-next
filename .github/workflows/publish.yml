@@ -35,7 +35,7 @@ jobs:
                   cat << EOF >> ./apify_storage/key_value_stores/default/INPUT.json
                   {
                     "$schema": "../../../INPUT_SCHEMA.json",
-                    "smhsUrl": "https://localhost:13579"
+                    "smhsUrl": "https://www.smhs.kh.edu.tw"
                   }
                   EOF
             - name: Start crawler and reverse proxy
