@@ -34,10 +34,8 @@ jobs:
                   mkdir -p ./apify_storage/key_value_stores/default
                   cat << EOF >> ./apify_storage/key_value_stores/default/INPUT.json
                   {
-                    "key": "INPUT",
-                    "value": {
-                      "announcements": []
-                    }
+                    "$schema": "../../../INPUT_SCHEMA.json",
+                    "smhsUrl": "https://localhost:13579"
                   }
                   EOF
             - name: Start crawler and reverse proxy
