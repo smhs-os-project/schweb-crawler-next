@@ -2,7 +2,11 @@
     "extends": "@apify/tsconfig",
     "compilerOptions": {
         "skipLibCheck": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "lib": [
+            "DOM",
+            "ES2015"
+        ]
     },
     "include": [
         "./src/**/*"

@@ -3,12 +3,19 @@
 // so that it can be started by running "npm start".
 
 // Include Apify SDK. For more information, see https://sdk.apify.com/
-import Apify from 'apify';
+import Apify, { CheerioHandlePage } from "apify";
+import {
+    getAnnouncements,
+    getCategoryTitle,
+    getSpecialModules,
+} from "./parser";
+import { handleRootPageFunction } from "./scrapers/root";
+import { PageType, UserData } from "./types";
 
-const { log } = Apify.utils;
+const { log, enqueueLinks } = Apify.utils;
 
 interface Schema {
-    message?: string;
+    smhsUrl: string;
 }
 
 Apify.main(async () => {
@@ -17,19 +24,38 @@ Apify.main(async () => {
     // a user interface for it, add INPUT_SCHEMA.json file to your actor.
     // For more information, see https://apify.com/docs/actor/input-schema
 
-    const input = await Apify.getInput() as Schema;
-    log.info('Input:', input);
+    // Open a named dataset
+    // const announcementsDataset = await Apify.openDataset("announcements");
 
-    // Do something useful here...
-    if (input?.message) {
-        log.info(`Message is: ${input.message}`);
-    }
+    const configuration = (await Apify.getInput()) as Schema;
 
-    // Save output
-    const output = {
-        receivedInput: input,
-        message: 'Hello sir!',
+    const requestQueue = await Apify.openRequestQueue();
+    await requestQueue.addRequest({
+        url: configuration.smhsUrl,
+    });
+
+    const handlePageFunction: CheerioHandlePage = async (ctx) => {
+        const userData = ctx.request.userData as UserData;
+
+        userData.requestQueue = requestQueue;
+        userData.type = userData.type ?? PageType.Root;
+
+        switch (userData.type) {
+            case PageType.Root:
+                // Deepcopy a context to prevent being contaminated.
+                handleRootPageFunction(structuredClone(ctx));
+                break;
+            default:
+                break;
+        }
     };
-    log.info('Output:', output);
-    await Apify.setValue('OUTPUT', output);
+
+    // Set up the crawler, passing a single options object as an argument.
+    const crawler = new Apify.CheerioCrawler({
+        requestQueue,
+        handlePageFunction,
+        ignoreSslErrors: true,
+    });
+
+    await crawler.run();
 });
