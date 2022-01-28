@@ -1,0 +1,42 @@
+name: Fetch and publish announcements
+
+on:
+    push:
+    schedule:
+        # https://crontab.guru
+        - cron: "34 */4 * * 1-5"
+        - cron: "52 */8 * * 0,6"
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@master
+            - name: Use Node.js 16.x
+              uses: actions/setup-node@master
+              with:
+                  node-version: 16
+                  cache: "yarn"
+            - name: Retrieving dependencies
+              run: yarn
+            - name: Build crawler
+              run: yarn build
+            - name: Start crawler and reverse proxy
+              env:
+                  OS: "linux"
+                  ARCH: "amd64"
+              run: bash reverse_proxy/start.sh && yarn crawler:start
+            - name: Pushes to another repository
+              uses: cpina/github-action-push-to-another-repository@main
+              env:
+                  API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+              with:
+                  source-directory: "output"
+                  destination-github-username: smhs-os-project
+                  destination-repository-name: smhs-announcements
+                  user-name: schweb-crawler
+                  user-email: sw@imych.one
+                  target-branch: master
+                  commit-message: update announcement
