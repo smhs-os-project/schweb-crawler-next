@@ -16,3 +16,4 @@ apify_storage
 
 .DS_Store
 reverse_proxy/caddy
+scripts/output
