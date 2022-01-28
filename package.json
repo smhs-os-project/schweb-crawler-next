@@ -4,10 +4,12 @@
     "description": "This is an example of an Apify actor.",
     "dependencies": {
         "@minify-html/js": "^0.8.0",
+        "@types/uuid": "^8.3.4",
         "apify": "^2.0.7",
         "cheerio": "^1.0.0-rc.10",
         "sanitize-html": "^2.6.1",
-        "tslib": "^2.3.1"
+        "tslib": "^2.3.1",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "@apify/eslint-config-ts": "^0.1.4",

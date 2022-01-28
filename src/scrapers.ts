@@ -1,5 +1,6 @@
 import { utils } from "apify";
 import { SCHOOL_ROOT_HOMEPAGE } from "./consts";
+import { writeAnnouncement } from "./exporter";
 import {
     getAnnouncementDetails,
     getSpecialModules,
@@ -31,7 +32,10 @@ export const handleAnnouncementPageFunction: Scraper<void> = async (
     };
 
     log.info(`Inserting ${announcement.title} to database...`);
-    await announcements.pushData(announcement);
+    await Promise.all([
+        announcements.pushData(announcement),
+        writeAnnouncement(announcement),
+    ]);
 };
 
 export const handleRootPageFunction: Scraper<void> = async (
@@ -43,29 +47,34 @@ export const handleRootPageFunction: Scraper<void> = async (
 
     for (const $module of getSpecialModules($)) {
         const categoryTitle = getCategoryTitle($module);
-        log.info(`Found special module: ${categoryTitle}`);
 
-        for (const announcement of getAnnouncements(
-            $,
-            $module,
-            categoryTitle
-        )) {
-            log.info(
-                `Queuing announcement: ${announcement.title} -> ${announcement.href}`
-            );
+        if (!categoryTitle.includes("活動照")) {
+            log.info(`Found special module: ${categoryTitle}`);
 
-            const { href } = new URL(announcement.href, request.loadedUrl);
-            queues.push(
-                requestQueue.addRequest({
-                    url: href,
-                    userData: {
-                        type: PageType.Announcement,
-                        context: {
-                            announcementInfo: announcement,
+            for (const announcement of getAnnouncements(
+                $,
+                $module,
+                categoryTitle
+            )) {
+                log.info(
+                    `Queuing announcement: ${announcement.title} -> ${announcement.href}`
+                );
+
+                const { href } = new URL(announcement.href, request.loadedUrl);
+                queues.push(
+                    requestQueue.addRequest({
+                        url: href,
+                        userData: {
+                            type: PageType.Announcement,
+                            context: {
+                                announcementInfo: announcement,
+                            },
                         },
-                    },
-                })
-            );
+                    })
+                );
+            }
+        } else {
+            log.info(`Ignoring image module: ${categoryTitle}`);
         }
     }
 
