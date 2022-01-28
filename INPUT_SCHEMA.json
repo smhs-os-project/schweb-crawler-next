@@ -1,14 +1,16 @@
 {
-  "title": "Input schema for the hello_word actor.",
-  "type": "object",
-  "schemaVersion": 1,
-  "properties": {
-    "message": {
-      "title": "Message",
-      "type": "string",
-      "description": "Just enter your hello world message.",
-      "editor": "textfield"
-    }
-  },
-  "required": []
+    "title": "The SMHS crawler configuration.",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "smhsUrl": {
+            "title": "SMHS reverse proxy URL",
+            "type": "string",
+            "description": "The URL to SMHS reverse proxy. See `reverse_proxy` folder.",
+            "editor": "textfield"
+        }
+    },
+    "required": [
+        "smhsUrl"
+    ]
 }
