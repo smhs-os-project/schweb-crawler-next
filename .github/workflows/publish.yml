@@ -34,15 +34,12 @@ jobs:
                   mkdir -p ./apify_storage/key_value_stores/default
                   cat << EOF >> ./apify_storage/key_value_stores/default/INPUT.json
                   {
-                    "$schema": "../../../INPUT_SCHEMA.json",
-                    "smhsUrl": "https://www.smhs.kh.edu.tw"
+                      "$schema": "../../../INPUT_SCHEMA.json",
+                      "smhsUrl": "https://www.smhs.kh.edu.tw"
                   }
                   EOF
-            - name: Start crawler and reverse proxy
-              env:
-                  OS: "linux"
-                  ARCH: "amd64"
-              run: bash reverse_proxy/start.sh && yarn start:prod
+            - name: Start crawler
+              run: yarn start:prod
             - name: Pushes to another repository
               uses: cpina/github-action-push-to-another-repository@main
               env:

@@ -32,7 +32,7 @@
         "start": "yarn start:dev",
         "start:prod": "node dist/main.js",
         "start:dev": "ts-node -T src/main.ts",
-        "build": "tsc",
+        "build": "tsc && cp -r ./src/exporter ./dist/exporter",
         "lint": "eslint ./src --ext .js,.ts",
         "lint:fix": "eslint ./src --ext .js,.ts --fix",
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
