@@ -4,16 +4,13 @@
 
 // Include Apify SDK. For more information, see https://sdk.apify.com/
 import Apify, { CheerioHandlePage } from "apify";
-import {
-    getAnnouncements,
-    getCategoryTitle,
-    getSpecialModules,
-} from "./parser";
+import { handleAnnouncementPageFunction } from "./scrapers/announcement";
 import { handleRootPageFunction } from "./scrapers/root";
-import { PageType, UserData } from "./types";
+import { UserData, PageType } from "./types";
 
-const { log, enqueueLinks } = Apify.utils;
-
+const {
+    utils: { log },
+} = Apify;
 interface Schema {
     smhsUrl: string;
 }
@@ -29,6 +26,11 @@ Apify.main(async () => {
 
     const configuration = (await Apify.getInput()) as Schema;
 
+    /**
+     * 抓下的所有公告。
+     */
+    const announcementsDataset = await Apify.openDataset("announcements");
+
     const requestQueue = await Apify.openRequestQueue();
     await requestQueue.addRequest({
         url: configuration.smhsUrl,
@@ -37,15 +39,20 @@ Apify.main(async () => {
     const handlePageFunction: CheerioHandlePage = async (ctx) => {
         const userData = ctx.request.userData as UserData;
 
-        userData.requestQueue = requestQueue;
         userData.type = userData.type ?? PageType.Root;
+        userData.requestQueue = requestQueue;
+        userData.datasets = userData.datasets ?? {};
+        userData.datasets.announcements = announcementsDataset;
 
         switch (userData.type) {
             case PageType.Root:
-                // Deepcopy a context to prevent being contaminated.
-                handleRootPageFunction(structuredClone(ctx));
+                handleRootPageFunction(ctx);
+                break;
+            case PageType.Announcement:
+                handleAnnouncementPageFunction(ctx);
                 break;
             default:
+                log.warning(`invalid page type: ${userData.type}`);
                 break;
         }
     };

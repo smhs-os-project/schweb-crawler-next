@@ -2,6 +2,7 @@
     "extends": "@apify/tsconfig",
     "compilerOptions": {
         "skipLibCheck": true,
+        "esModuleInterop": true,
         "outDir": "dist",
         "lib": [
             "DOM",
