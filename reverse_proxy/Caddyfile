@@ -1,0 +1,20 @@
+{
+	order replace after encode
+}
+
+localhost:13579 {
+	tls internal
+
+	reverse_proxy {
+		to https://163.16.244.174
+		header_up Host "www.smhs.kh.edu.tw"
+		header_up Accept-Encoding identity
+
+		transport http {
+			tls
+			tls_insecure_skip_verify
+		}
+	}
+
+	replace re "http(s|):\/\/www.smhs.kh.edu.tw/" "/"
+}
