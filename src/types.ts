@@ -1,4 +1,4 @@
-import type { Dataset, RequestQueue } from "apify";
+import type { CheerioHandlePageInputs, Dataset, RequestQueue } from "apify";
 
 /**
  * `getAnnouncements()` 回傳的公告項目。
@@ -63,29 +63,25 @@ export enum PageType {
     /**
      * 首頁。
      */
-    Root,
+    Root = "root",
     /**
      * 公告頁。
      */
-    Announcement,
+    Announcement = "announcement",
     /**
      * 檔案（TODO）。
      */
-    Files,
+    Files = "files",
 }
 
 /**
- * 請求的特殊內容。
+ * 請求的情境資料。
  */
 export interface UserData {
     /**
      * 本請求的頁面類型。
      */
     type: PageType;
-    /**
-     * 本請求的請求佇列（可用於傳入 `utils.enqueueLinks()`）。
-     */
-    requestQueue: RequestQueue;
     /**
      * 先前請求頁面的情境資料。
      */
@@ -95,13 +91,34 @@ export interface UserData {
          */
         announcementInfo?: AnnouncementEntryInfo;
     };
+}
+
+/**
+ * 給子 Scraper 的情境資料。
+ */
+export interface ScraperContext {
     /**
-     * 要儲存為實際檔案的資料集。
+     * 本請求的請求佇列（可用於傳入 `utils.enqueueLinks()`）。
+     */
+    requestQueue: RequestQueue;
+    /**
+     * 資料集。
      */
     datasets: {
         /**
-         * 抓下的所有公告。
+         * 抓下的所有公告
          */
         announcements: Dataset;
     };
 }
+
+/**
+ * 爬蟲函式。基於 `CheerioHandlePage`。
+ *
+ * @template RT 回傳類型。
+ * @see CheerioHandlePage
+ */
+export type Scraper<RT> = (
+    scraperContext: ScraperContext,
+    requestInputs: CheerioHandlePageInputs
+) => Promise<RT>;

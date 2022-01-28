@@ -1,13 +1,13 @@
-import { CheerioHandlePage, utils } from "apify";
+import { utils } from "apify";
 import { getAnnouncementDetails } from "../parser";
-import { AnnouncementEntry, UserData } from "../types";
+import { AnnouncementEntry, Scraper, UserData } from "../types";
 
 const { log } = utils;
 
-export const handleAnnouncementPageFunction: CheerioHandlePage = async ({
-    request,
-    $: _$,
-}) => {
+export const handleAnnouncementPageFunction: Scraper<void> = async (
+    { datasets: { announcements } },
+    { request, $: _$ }
+) => {
     const $ = _$ as cheerio.Root;
     const userData = request.userData as UserData;
 
@@ -21,5 +21,5 @@ export const handleAnnouncementPageFunction: CheerioHandlePage = async ({
     };
 
     log.info(`Inserting ${announcement.title} to database...`);
-    userData.datasets.announcements.pushData(announcement);
+    await announcements.pushData(announcement);
 };

@@ -222,6 +222,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@minify-html/js@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@minify-html/js@npm:0.8.0"
+  dependencies:
+    node-gyp: latest
+  bin:
+    minify-html: cli.js
+  checksum: b1961ca3dc053f2d66068828fec22a65b275024c93b442955ed4d81cd7138f8039b4d7ffbd1c0822ee100324776041809ac3e91acfa1e17d9f13420d5757f348
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -4170,6 +4181,7 @@ __metadata:
   dependencies:
     "@apify/eslint-config-ts": ^0.1.4
     "@apify/tsconfig": ^0.1.0
+    "@minify-html/js": ^0.8.0
     "@types/cheerio": ^0.22.30
     "@types/node": ^17.0.13
     "@types/sanitize-html": ^2.6.2

@@ -6,7 +6,7 @@
 import Apify, { CheerioHandlePage } from "apify";
 import { handleAnnouncementPageFunction } from "./scrapers/announcement";
 import { handleRootPageFunction } from "./scrapers/root";
-import { UserData, PageType } from "./types";
+import { UserData, PageType, ScraperContext } from "./types";
 
 const {
     utils: { log },
@@ -36,20 +36,28 @@ Apify.main(async () => {
         url: configuration.smhsUrl,
     });
 
-    const handlePageFunction: CheerioHandlePage = async (ctx) => {
-        const userData = ctx.request.userData as UserData;
+    const handlePageFunction: CheerioHandlePage = async (requestInputs) => {
+        const userData = requestInputs.request.userData as UserData;
+        const scraperContext: ScraperContext = {
+            requestQueue,
+            datasets: {
+                announcements: announcementsDataset,
+            },
+        };
 
         userData.type = userData.type ?? PageType.Root;
-        userData.requestQueue = requestQueue;
-        userData.datasets = userData.datasets ?? {};
-        userData.datasets.announcements = announcementsDataset;
+
+        log.debug(`Received a ${userData.type} event.`);
 
         switch (userData.type) {
             case PageType.Root:
-                handleRootPageFunction(ctx);
+                await handleRootPageFunction(scraperContext, requestInputs);
                 break;
             case PageType.Announcement:
-                handleAnnouncementPageFunction(ctx);
+                await handleAnnouncementPageFunction(
+                    scraperContext,
+                    requestInputs
+                );
                 break;
             default:
                 log.warning(`invalid page type: ${userData.type}`);

@@ -1,19 +1,18 @@
-import { CheerioHandlePage, utils } from "apify";
+import { utils } from "apify";
 import {
     getSpecialModules,
     getCategoryTitle,
     getAnnouncements,
 } from "../parser";
-import { PageType, UserData } from "../types";
+import { PageType, Scraper } from "../types";
 
-const { log, enqueueLinks } = utils;
+const { log } = utils;
 
-export const handleRootPageFunction: CheerioHandlePage = async ({
-    request,
-    $: _$,
-}) => {
+export const handleRootPageFunction: Scraper<void> = async (
+    { requestQueue },
+    { request, $: _$ }
+) => {
     const $ = _$ as cheerio.Root;
-    const { requestQueue } = request.userData as UserData;
     const queues: Promise<unknown>[] = [];
 
     for (const $module of getSpecialModules($)) {
@@ -25,23 +24,19 @@ export const handleRootPageFunction: CheerioHandlePage = async ({
             $module,
             categoryTitle
         )) {
-            log.info(`Queuing announcement: ${announcement.title}`);
+            log.info(
+                `Queuing announcement: ${announcement.title} -> ${announcement.href}`
+            );
 
+            const { href } = new URL(announcement.href, request.loadedUrl);
             queues.push(
-                enqueueLinks({
-                    $,
-                    requestQueue,
-                    baseUrl: request.loadedUrl,
-                    pseudoUrls: [announcement.href],
-                    transformRequestFunction: (nextRequest) => {
-                        log.debug(`transforming: ${nextRequest.url}`);
-                        nextRequest.userData = {
-                            type: PageType.Announcement,
-                            context: {
-                                announcementInfo: announcement,
-                            },
-                        } as Partial<UserData>;
-                        return nextRequest;
+                requestQueue.addRequest({
+                    url: href,
+                    userData: {
+                        type: PageType.Announcement,
+                        context: {
+                            announcementInfo: announcement,
+                        },
                     },
                 })
             );

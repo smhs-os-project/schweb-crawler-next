@@ -1,4 +1,5 @@
 import sanitizeHtml from "sanitize-html";
+import minifyHtml from "@minify-html/js";
 import { NO_CONTENT_PLACEHOLDER, SCHOOL_ROOT_HOMEPAGE } from "./consts";
 import {
     AnnouncementAttachment,
@@ -61,13 +62,15 @@ export function* getAnnouncements(
         const $titleLink = $item.find("a");
         const $date = $item.find(".mdate");
 
-        const title = $titleLink.attr("title");
+        const title = $titleLink.attr("title")?.trim();
         const href = $titleLink.attr("href");
-        const date = $date.text();
+        const date = $date.text().trim();
 
-        if (title && href && date) yield { category, title, href, date };
+        if (title && href) yield { category, title, href, date };
     }
 }
+
+const minifyConfiguration = minifyHtml.createConfiguration({});
 
 /**
  * 解析並清理公告內頁中的公告額外資訊。
@@ -79,14 +82,20 @@ export function getAnnouncementDetails(
     const $content = $(".mcont");
     const $attachments = $(".mptattach a");
 
-    const content = sanitizeHtml($content.html() ?? NO_CONTENT_PLACEHOLDER);
+    const content = minifyHtml
+        .minify(
+            sanitizeHtml($content.html() ?? NO_CONTENT_PLACEHOLDER),
+            minifyConfiguration
+        )
+        .toString("utf-8");
     const attachments: AnnouncementAttachment[] = [];
 
     for (const attachment of $attachments) {
-        const name = $(attachment).attr("title");
+        const rawName = $(attachment).attr("title");
         const uri = $(attachment).attr("href");
 
-        if (name && uri) {
+        if (rawName && uri) {
+            const name = rawName.replace(/(?:\(|（)另開新視窗(?:\)|）)/, "");
             const { href } = new URL(uri, SCHOOL_ROOT_HOMEPAGE);
             attachments.push({ name, href });
         }
