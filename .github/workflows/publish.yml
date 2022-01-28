@@ -19,15 +19,32 @@ jobs:
               with:
                   node-version: 16
                   cache: "yarn"
+            - name: Cache apify_storage
+              uses: actions/cache@v2
+              with:
+                  path: |
+                      ./apify_storage
+                  key: v0-apify-storage
             - name: Retrieving dependencies
               run: yarn
             - name: Build crawler
               run: yarn build
+            - name: Initiate INPUT store
+              run: |
+                  mkdir -p ./apify_storage/key_value_stores/default
+                  cat << EOF >> ./apify_storage/key_value_stores/default/INPUT.json
+                  {
+                    "key": "INPUT",
+                    "value": {
+                      "announcements": []
+                    }
+                  }
+                  EOF
             - name: Start crawler and reverse proxy
               env:
                   OS: "linux"
                   ARCH: "amd64"
-              run: bash reverse_proxy/start.sh && yarn crawler:start
+              run: bash reverse_proxy/start.sh && yarn start:prod
             - name: Pushes to another repository
               uses: cpina/github-action-push-to-another-repository@main
               env:
