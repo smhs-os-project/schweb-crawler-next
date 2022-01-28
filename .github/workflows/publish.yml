@@ -45,7 +45,7 @@ jobs:
               env:
                   API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
               with:
-                  source-directory: "output"
+                  source-directory: data
                   destination-github-username: smhs-os-project
                   destination-repository-name: smhs-announcements
                   user-name: schweb-crawler
