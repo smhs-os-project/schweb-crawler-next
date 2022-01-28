@@ -4,6 +4,7 @@
 
 // Include Apify SDK. For more information, see https://sdk.apify.com/
 import Apify, { CheerioHandlePage } from "apify";
+import { createIndex } from "./indexer";
 import { handleAnnouncementPageFunction } from "./scrapers/announcement";
 import { handleRootPageFunction } from "./scrapers/root";
 import { UserData, PageType, ScraperContext } from "./types";
@@ -73,4 +74,8 @@ Apify.main(async () => {
     });
 
     await crawler.run();
+
+    log.info("Creating index...");
+    await createIndex(announcementsDataset);
+    log.info("Index created successfully.");
 });

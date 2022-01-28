@@ -1,4 +1,5 @@
 import { utils } from "apify";
+import { SCHOOL_ROOT_HOMEPAGE } from "../consts";
 import { getAnnouncementDetails } from "../parser";
 import { AnnouncementEntry, Scraper, UserData } from "../types";
 
@@ -18,6 +19,10 @@ export const handleAnnouncementPageFunction: Scraper<void> = async (
     const announcement: AnnouncementEntry = {
         ...userData.context.announcementInfo,
         ...announcementDetails,
+        href: new URL(
+            userData.context.announcementInfo.href,
+            SCHOOL_ROOT_HOMEPAGE
+        ).href,
     };
 
     log.info(`Inserting ${announcement.title} to database...`);

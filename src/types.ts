@@ -1,6 +1,20 @@
 import type { CheerioHandlePageInputs, Dataset, RequestQueue } from "apify";
 
 /**
+ * 公告索引中的簡短公告。
+ */
+export interface AnnouncementIndexEntry {
+    /**
+     * 公告 ID。
+     *
+     * 可從 `announcements/index.json` 中取得。
+     */
+    id: string;
+    title: string;
+    date: string;
+}
+
+/**
  * `getAnnouncements()` 回傳的公告項目。
  */
 export interface AnnouncementEntryInfo {
