@@ -24,5 +24,6 @@
 		"test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
 	},
 	"author": "It's not you it's me",
-	"license": "ISC"
+	"license": "ISC",
+	"packageManager": "yarn@3.1.1"
 }
