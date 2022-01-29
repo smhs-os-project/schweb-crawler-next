@@ -60,13 +60,14 @@ export const handleRootPageFunction: Scraper<void> = async (
                     `Queuing announcement: ${announcement.title} -> ${announcement.href}`
                 );
 
+                const { href: loadedUrlHref } = new URL(request.loadedUrl);
                 const { host, href } = new URL(
                     announcement.href,
                     request.loadedUrl
                 );
 
                 // 忽略非學校網站的公告連結
-                if (host === "www.smhs.kh.edu.tw") {
+                if (host === loadedUrlHref) {
                     queues.push(
                         requestQueue.addRequest({
                             url: href,
