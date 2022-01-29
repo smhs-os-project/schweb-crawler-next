@@ -71,6 +71,7 @@ export class AnnouncementDatabase {
      * 取回公告項目。
      *
      * @param uuid
+     * @throws UUIDNotExist
      */
     private retrieveAnnouncement(uuid: UUID): AnnouncementEntry {
         const announcement = this.stageDataset.get(uuid);
@@ -84,6 +85,7 @@ export class AnnouncementDatabase {
      * 寫入公告內容。
      *
      * @param content 要寫入的公告內容。
+     * @throws UUIDNotExist
      */
     patchAnnouncementContent(
         uuid: UUID,
@@ -101,6 +103,7 @@ export class AnnouncementDatabase {
      * 寫入公告附件。
      *
      * @param attachment 要寫入的公告附件。
+     * @throws UUIDNotExist
      */
     patchAnnouncementAttachments(
         uuid: UUID,
