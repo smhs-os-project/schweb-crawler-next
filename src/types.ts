@@ -24,6 +24,13 @@ export interface AnnouncementIndexEntry {
      * 連到校網的連結。
      */
     href: string;
+    /**
+     * 公告是否是外部連結？
+     *
+     * 如果連到外部連結，則不建立公告完整資料，
+     * 取用者可以直接將使用者導向 `href` 的連結。
+     */
+    external: boolean;
 }
 
 /**
@@ -46,6 +53,13 @@ export interface AnnouncementEntryInfo {
      * 公告的發布日期。
      */
     date: string;
+    /**
+     * 公告是否是外部連結？
+     *
+     * 如果連到外部連結，則不建立公告完整資料，
+     * 取用者可以直接將使用者導向 `href` 的連結。
+     */
+    external: boolean;
 }
 
 /**

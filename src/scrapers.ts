@@ -39,7 +39,7 @@ export const handleAnnouncementPageFunction: Scraper<void> = async (
 };
 
 export const handleRootPageFunction: Scraper<void> = async (
-    { requestQueue },
+    { requestQueue, datasets: { announcements } },
     { request, $: _$ }
 ) => {
     const $ = _$ as cheerio.Root;
@@ -79,6 +79,9 @@ export const handleRootPageFunction: Scraper<void> = async (
                             },
                         })
                     );
+                } else {
+                    // 逕行輸出至資料庫。
+                    await announcements.pushData(announcement);
                 }
             }
         } else {
