@@ -10,6 +10,7 @@
         "recursive-copy": "^2.0.13",
         "sanitize-html": "^2.6.1",
         "tslib": "^2.3.1",
+        "typed-emitter": "^2.1.0",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
