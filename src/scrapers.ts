@@ -60,18 +60,25 @@ export const handleRootPageFunction: Scraper<void> = async (
                     `Queuing announcement: ${announcement.title} -> ${announcement.href}`
                 );
 
-                const { href } = new URL(announcement.href, request.loadedUrl);
-                queues.push(
-                    requestQueue.addRequest({
-                        url: href,
-                        userData: {
-                            type: PageType.Announcement,
-                            context: {
-                                announcementInfo: announcement,
-                            },
-                        },
-                    })
+                const { host, href } = new URL(
+                    announcement.href,
+                    request.loadedUrl
                 );
+
+                // 忽略非學校網站的公告連結
+                if (host !== "www.smhs.kh.edu.tw") {
+                    queues.push(
+                        requestQueue.addRequest({
+                            url: href,
+                            userData: {
+                                type: PageType.Announcement,
+                                context: {
+                                    announcementInfo: announcement,
+                                },
+                            },
+                        })
+                    );
+                }
             }
         } else {
             log.info(`Ignoring image module: ${categoryTitle}`);

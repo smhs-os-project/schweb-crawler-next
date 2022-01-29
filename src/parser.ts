@@ -96,8 +96,12 @@ export function getAnnouncementDetails(
 
         if (rawName && uri) {
             const name = rawName.replace(/(?:\(|（)另開新視窗(?:\)|）)/, "");
-            const { href } = new URL(uri, SCHOOL_ROOT_HOMEPAGE);
-            attachments.push({ name, href });
+            const { host, href } = new URL(uri, SCHOOL_ROOT_HOMEPAGE);
+
+            // 忽略非學校網站的附件
+            if (host !== "www.smhs.kh.edu.tw") {
+                attachments.push({ name, href });
+            }
         }
     }
 
