@@ -99,7 +99,7 @@ export function getAnnouncementDetails(
             const { host, href } = new URL(uri, SCHOOL_ROOT_HOMEPAGE);
 
             // 忽略非學校網站的附件
-            if (host !== "www.smhs.kh.edu.tw") {
+            if (host === "www.smhs.kh.edu.tw") {
                 attachments.push({ name, href });
             }
         }

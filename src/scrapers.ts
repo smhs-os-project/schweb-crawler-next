@@ -66,7 +66,7 @@ export const handleRootPageFunction: Scraper<void> = async (
                 );
 
                 // 忽略非學校網站的公告連結
-                if (host !== "www.smhs.kh.edu.tw") {
+                if (host === "www.smhs.kh.edu.tw") {
                     queues.push(
                         requestQueue.addRequest({
                             url: href,
