@@ -16,15 +16,20 @@ import { UUIDNotExist } from "./exceptions/uuid-not-exist";
  * AnnouncementDatabase 可使用的事件。
  */
 export type AnnouncementEventMap = {
-    postAnnouncementInfo: (info: AnnouncementInfo) => UUID;
+    postAnnouncementInfo: (
+        info: AnnouncementInfo,
+        cb: (uuid: UUID) => void
+    ) => void;
     patchAnnouncementContent: (
         uuid: UUID,
-        content: Partial<AnnouncementContent>
-    ) => UUID;
+        content: Partial<AnnouncementContent>,
+        cb: (uuid: UUID) => void
+    ) => void;
     patchAnnouncementAttachments: (
         uuid: UUID,
-        attachment: AnnouncementAttachment[]
-    ) => UUID;
+        attachment: AnnouncementAttachment[],
+        cb: (uuid: UUID) => void
+    ) => void;
 };
 
 export class AnnouncementDatabase {
@@ -40,17 +45,17 @@ export class AnnouncementDatabase {
         private readonly uuidGenerator: AnnouncementUUIDGenerator,
         eventEmitter: TypedEventEmitter<AnnouncementEventMap>
     ) {
-        eventEmitter.on(
-            "postAnnouncementInfo",
-            this.postAnnouncementInfo.bind(this)
-        );
-        eventEmitter.on(
-            "patchAnnouncementContent",
-            this.patchAnnouncementContent.bind(this)
-        );
+        eventEmitter.on("postAnnouncementInfo", (info, cb) => {
+            cb(this.postAnnouncementInfo(info));
+        });
+        eventEmitter.on("patchAnnouncementContent", (uuid, content, cb) => {
+            cb(this.patchAnnouncementContent(uuid, content));
+        });
         eventEmitter.on(
             "patchAnnouncementAttachments",
-            this.patchAnnouncementAttachments.bind(this)
+            (uuid, attachment, cb) => {
+                cb(this.patchAnnouncementAttachments(uuid, attachment));
+            }
         );
     }
 
