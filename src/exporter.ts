@@ -2,6 +2,7 @@ import { Dataset } from "apify";
 import fs, { promises as fsPromises } from "fs";
 import path from "path";
 import { v5 as uuidv5 } from "uuid";
+import copy from "recursive-copy";
 import { AnnouncementEntry, AnnouncementIndexEntry } from "./types";
 
 const categoryNamespace = "443de3b4-6ca5-49e4-bf97-f31373ad221e";
@@ -151,7 +152,7 @@ async function writeFile(
  */
 async function copyFile(src: string, dst: string): Promise<void> {
     await createDirOfFile(dst);
-    await fsPromises.copyFile(src, dst);
+    await copy(src, dst);
 }
 
 /**
