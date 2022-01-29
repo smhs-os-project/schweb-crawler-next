@@ -32,7 +32,7 @@ jobs:
             - name: Initiate INPUT store
               run: |
                   mkdir -p ./apify_storage/key_value_stores/default
-                  cat << EOF >> ./apify_storage/key_value_stores/default/INPUT.json
+                  cat << EOF > ./apify_storage/key_value_stores/default/INPUT.json
                   {
                       "$schema": "../../../INPUT_SCHEMA.json",
                       "smhsUrl": "https://www.smhs.kh.edu.tw"
