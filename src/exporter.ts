@@ -152,7 +152,9 @@ async function writeFile(
  */
 async function copyFile(src: string, dst: string): Promise<void> {
     await createDirOfFile(dst);
-    await copy(src, dst);
+    await copy(src, dst, {
+        overwrite: true,
+    });
 }
 
 /**
