@@ -2,6 +2,8 @@ name: Fetch and publish announcements
 
 on:
     push:
+        branches:
+            - master
     schedule:
         # https://crontab.guru
         - cron: "34 */4 * * 1-5"
