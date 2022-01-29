@@ -1,0 +1,68 @@
+{
+    "$id": "https://api.schweb.pan93.com/schemas/announcement.json",
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$ref": "#/definitions/AnnouncementEntry",
+    "definitions": {
+        "AnnouncementEntry": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "content": {
+                    "title": "公告內容",
+                    "description": "已經使用 `sanitize-html` 清理內容。",
+                    "type": "string"
+                },
+                "attachments": {
+                    "title": "公告的附件名單",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AnnouncementAttachment"
+                    }
+                },
+                "category": {
+                    "title": "公告分類",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "公告標題",
+                    "type": "string"
+                },
+                "href": {
+                    "title": "公告指向的連結",
+                    "type": "string"
+                },
+                "date": {
+                    "title": "公告的發布日期",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "attachments",
+                "category",
+                "content",
+                "date",
+                "href",
+                "title"
+            ]
+        },
+        "AnnouncementAttachment": {
+            "title": "公告的附件",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "title": "附件名稱",
+                    "type": "string"
+                },
+                "href": {
+                    "title": "附件連結",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "href"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

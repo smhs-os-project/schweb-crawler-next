@@ -1,0 +1,40 @@
+{
+    "$id": "https://api.schweb.pan93.com/schemas/index.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "公告索引中的簡短公告資訊",
+    "type": "object",
+    "additionalProperties": {
+        "$ref": "#/definitions/AnnouncementIndexEntry"
+    },
+    "definitions": {
+        "AnnouncementIndexEntry": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "公告 ID",
+                    "description": "`/announcements/{id}.json` 可以取得機器易讀的公告完整資料",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "公告標題",
+                    "type": "string"
+                },
+                "date": {
+                    "title": "公告發布日期",
+                    "type": "string"
+                },
+                "href": {
+                    "title": "連到校網的連結",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "title",
+                "date",
+                "href"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

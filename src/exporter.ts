@@ -9,6 +9,28 @@ const categoryUUIDCache: Map<string, string> = new Map();
 const dataDirectory = path.join(__dirname, "..", "data");
 const announcementsDirectory = path.join(dataDirectory, "announcements");
 const apiHelpFile = path.join(__dirname, "exporter", "api-help.md");
+const schemasSrcDir = path.join(__dirname, "exporter", "schemas");
+
+/**
+ * 可取用的 JSON schema。
+ */
+enum Schema {
+    Announcement = "announcement",
+    AvailableCategory = "available_category",
+    Index = "index",
+}
+
+/**
+ * 對應 Schema 的 JSON schemas 連結。
+ */
+const schemas: Record<Schema, string> = {
+    [Schema.Announcement]:
+        "https://api.schweb.pan93.com/schemas/announcement.json",
+    [Schema.AvailableCategory]:
+        "https://api.schweb.pan93.com/schemas/available_category.json",
+    [Schema.Index]:
+        "https://api.schweb.pan93.com/schemas/available_category.json",
+};
 
 /**
  * 取得指定分類的唯一 UUID。
@@ -78,7 +100,7 @@ function generateAnnouncementIndexMarkdown(
 # SMHS 公告資料庫
 
 這個公告資料庫可以在 SMHS 校網斷線時讓您查閱公告（目前不包含附件）。
-您亦可以撰寫自己的前端網頁對接本資料，詳情見 \`api-help.md\`。
+您亦可以撰寫自己的前端網頁對接本資料，詳情見 [api-help.md](./api-help.md)。
 
 ## 公告一覽`,
     ];
@@ -153,6 +175,25 @@ export async function writeAnnouncement(
 }
 
 /**
+ * 封裝資料。
+ *
+ * 「封裝」會在資料中加入 JSON Schema 以及時間戳，
+ * 並將原有的資料移動到 `.data` 裡面。
+ *
+ * @param data 原始資料。
+ */
+export function packData<T>(
+    schema: Schema,
+    data: T
+): { $schema: string; updateAt: number; data: T } {
+    return {
+        $schema: schemas[schema],
+        updateAt: Date.now(),
+        data,
+    };
+}
+
+/**
  * 建構索引檔案。
  *
  * @param announcements 公告項目
@@ -182,8 +223,20 @@ export async function constructIndex(announcements: Dataset): Promise<void> {
     const indexMarkdown = path.join(dataDirectory, "index.md");
 
     await Promise.all([
-        writeFile(availableCategoryFile, JSON.stringify(Object.keys(index))),
-        writeFile(indexFile, JSON.stringify(index)),
+        writeFile(
+            availableCategoryFile,
+            JSON.stringify(
+                packData(Schema.AvailableCategory, Object.keys(index))
+            )
+        ),
+        writeFile(indexFile, JSON.stringify(packData(Schema.Index, index))),
         writeFile(indexMarkdown, generateAnnouncementIndexMarkdown(index)),
     ]);
+}
+
+/**
+ * 複製 Schema 定義到 data directory。
+ */
+export async function copySchemas(): Promise<void> {
+    await copyFile(schemasSrcDir, dataDirectory);
 }
