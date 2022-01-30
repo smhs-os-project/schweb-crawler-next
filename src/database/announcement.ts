@@ -18,17 +18,17 @@ import { UUIDNotExist } from "./exceptions/uuid-not-exist";
 export type AnnouncementEventMap = {
     postAnnouncementInfo: (
         info: AnnouncementInfo,
-        cb: (uuid: UUID) => void
+        cb?: (uuid: UUID) => void
     ) => void;
     patchAnnouncementContent: (
         uuid: UUID,
         content: Partial<AnnouncementContent>,
-        cb: (uuid: UUID) => void
+        cb?: (uuid: UUID) => void
     ) => void;
     patchAnnouncementAttachments: (
         uuid: UUID,
         attachment: AnnouncementAttachment[],
-        cb: (uuid: UUID) => void
+        cb?: (uuid: UUID) => void
     ) => void;
 };
 
@@ -46,15 +46,24 @@ export class AnnouncementDatabase {
         eventEmitter: TypedEventEmitter<AnnouncementEventMap>
     ) {
         eventEmitter.on("postAnnouncementInfo", (info, cb) => {
-            cb(this.postAnnouncementInfo(info));
+            const resp = this.postAnnouncementInfo(info);
+
+            if (cb) cb(resp);
         });
         eventEmitter.on("patchAnnouncementContent", (uuid, content, cb) => {
-            cb(this.patchAnnouncementContent(uuid, content));
+            const resp = this.patchAnnouncementContent(uuid, content);
+
+            if (cb) cb(resp);
         });
         eventEmitter.on(
             "patchAnnouncementAttachments",
             (uuid, attachment, cb) => {
-                cb(this.patchAnnouncementAttachments(uuid, attachment));
+                const resp = this.patchAnnouncementAttachments(
+                    uuid,
+                    attachment
+                );
+
+                if (cb) cb(resp);
             }
         );
     }
