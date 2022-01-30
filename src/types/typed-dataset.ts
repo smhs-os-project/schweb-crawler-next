@@ -3,7 +3,7 @@ import type { Dataset } from "apify";
 export type TypedDatasetConsumer<T> = (item: T, index: number) => T;
 
 /**
- * 有正確標注類型（而非 `object`）的 Dataset。
+ * 有正確標注類型（而非 `object`）的 Dataset
  *
  * 尚未標完所有的類型。若有需要可自行標註。
  *

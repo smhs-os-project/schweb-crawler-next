@@ -1,5 +1,5 @@
 /**
- * `getAnnouncements()` 回傳的公告資訊。
+ * `getAnnouncements()` 回傳的公告資訊
  */
 export interface AnnouncementInfo {
     /**
@@ -7,15 +7,15 @@ export interface AnnouncementInfo {
      */
     category: string;
     /**
-     * 公告標題。
+     * 公告標題
      */
     title: string;
     /**
-     * 公告指向的連結。
+     * 公告指向的連結
      */
     href: string;
     /**
-     * 公告的發布日期。
+     * 公告的發布日期
      */
     date: string;
     /**
@@ -28,34 +28,36 @@ export interface AnnouncementInfo {
 }
 
 /**
- * 公告內文與附件。
+ * 公告內文與附件
  */
 export interface AnnouncementContent {
     /**
-     * 公告內文。已經使用 `sanitize-html` 清理內容。
+     * 公告內文
+     *
+     * 已經使用 `sanitize-html` 清理及 `minify-html` 壓縮內容。
      */
     content?: string | null;
     /**
-     * 公告的附件名單。
+     * 公告的附件名單
      */
     attachments: AnnouncementAttachment[];
 }
 
 /**
- * 公告的附件。
+ * 公告附件
  */
 export interface AnnouncementAttachment {
     /**
-     * 附件名稱。
+     * 附件名稱
      */
     name: string;
     /**
-     * 附件連結。
+     * 附件連結
      */
     href: string;
 }
 
 /**
- * 一個完整的公告資料。
+ * 一個完整的公告資料
  */
 export type AnnouncementEntry = AnnouncementInfo & AnnouncementContent;
