@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/AvailableCategoriesResponse",
+    "definitions": {
+        "AvailableCategoriesResponse": {
+            "$ref": "#/definitions/EndpointResponse%3CAvailableCategories%3E",
+            "description": "可取用的分類清單 API 回應"
+        },
+        "EndpointResponse<AvailableCategories>": {
+            "type": "object",
+            "properties": {
+                "$schema": {
+                    "type": [
+                        "string"
+                    ],
+                    "description": "JSON Schema 的地址。"
+                },
+                "updateAt": {
+                    "type": "number",
+                    "description": "資料更新時間\n\n是 Unix 時間戳記。"
+                },
+                "data": {
+                    "$ref": "#/definitions/AvailableCategories",
+                    "description": "主資料"
+                }
+            },
+            "required": [
+                "$schema",
+                "updateAt",
+                "data"
+            ],
+            "additionalProperties": false,
+            "description": "Endpoint 應該回應的資料格式"
+        },
+        "AvailableCategories": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "可取用的分類清單"
+        }
+    }
+}

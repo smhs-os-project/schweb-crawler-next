@@ -13,3 +13,13 @@ export type AnnouncementIndexEntry = {
      */
     id: string;
 } & Omit<AnnouncementInfo, "category">;
+
+/**
+ * 公告索引
+ */
+export type AnnouncementIndex = Record<string, AnnouncementIndexEntry[]>;
+
+/**
+ * 可取用的分類清單
+ */
+export type AvailableCategories = string[];

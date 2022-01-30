@@ -1,0 +1,80 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/IndexResponse",
+    "definitions": {
+        "IndexResponse": {
+            "$ref": "#/definitions/EndpointResponse%3CAnnouncementIndex%3E",
+            "description": "公告索引 API 回應"
+        },
+        "EndpointResponse<AnnouncementIndex>": {
+            "type": "object",
+            "properties": {
+                "$schema": {
+                    "type": [
+                        "string"
+                    ],
+                    "description": "JSON Schema 的地址。"
+                },
+                "updateAt": {
+                    "type": "number",
+                    "description": "資料更新時間\n\n是 Unix 時間戳記。"
+                },
+                "data": {
+                    "$ref": "#/definitions/AnnouncementIndex",
+                    "description": "主資料"
+                }
+            },
+            "required": [
+                "$schema",
+                "updateAt",
+                "data"
+            ],
+            "additionalProperties": false,
+            "description": "Endpoint 應該回應的資料格式"
+        },
+        "AnnouncementIndex": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AnnouncementIndexEntry"
+                }
+            },
+            "description": "公告索引"
+        },
+        "AnnouncementIndexEntry": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "公告標題"
+                },
+                "href": {
+                    "type": "string",
+                    "description": "公告指向的連結"
+                },
+                "date": {
+                    "type": "string",
+                    "description": "公告的發布日期"
+                },
+                "external": {
+                    "type": "boolean",
+                    "description": "公告是否是外部連結？\n\n如果連到外部連結，則不建立公告完整資料， 取用者可以直接將使用者導向 `href` 的連結。"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "公告 ID\n\n`/announcements/{id}.json` 可以取得機器易讀的公告完整資料。"
+                }
+            },
+            "required": [
+                "date",
+                "external",
+                "href",
+                "id",
+                "title"
+            ],
+            "description": "公告索引中的簡短公告資訊"
+        }
+    }
+}

@@ -14,5 +14,5 @@ apify_storage
 !.yarn/versions
 
 .DS_Store
-reverse_proxy/caddy
-data/
+/reverse_proxy/caddy
+/data/
