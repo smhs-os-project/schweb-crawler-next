@@ -2,11 +2,11 @@ import type { CheerioHandlePageInputs } from "apify";
 import apify, { utils } from "apify";
 import { AnnouncementInfo } from "../../types/announcement-entry";
 import { Handler, PageType } from "../../types/router-types";
-import { BaseHandler } from "../base-handler";
+import { HandlerAbstract } from "../handler.abstract";
 
 const { log } = utils;
 
-export class HomepageHandler extends BaseHandler implements Handler {
+export class HomepageHandler extends HandlerAbstract implements Handler {
     protected async announcementModuleHandler({
         $,
         request,

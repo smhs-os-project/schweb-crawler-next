@@ -2,14 +2,14 @@ import type { CheerioHandlePageInputs } from "apify";
 import minifyHtml from "@minify-html/js";
 import sanitizeHtml from "sanitize-html";
 import type { Handler } from "../../types/router-types";
-import { BaseHandler } from "../base-handler";
+import { HandlerAbstract } from "../handler.abstract";
 import type { AnnouncementAttachment } from "../../types/announcement-entry";
 import { SCHOOL_ROOT_HOMEPAGE } from "../../consts";
 import { InvalidUUID } from "./exceptions/invalid-uuid";
 
 const minifyConfiguration = minifyHtml.createConfiguration({});
 
-export class AnnouncementHandler extends BaseHandler implements Handler {
+export class AnnouncementHandler extends HandlerAbstract implements Handler {
     protected async contentHandler({
         $,
         uuid,
