@@ -1,6 +1,6 @@
 import type { Dataset } from "apify";
 
-export type TypedDatasetConsumer<T> = (item: T, index: number) => T;
+export type TypedDatasetConsumer<T> = (item: T, index: number) => void;
 
 /**
  * 有正確標注類型（而非 `object`）的 Dataset
