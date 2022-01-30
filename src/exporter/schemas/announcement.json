@@ -1,6 +1,7 @@
 {
+    "name": "一個完整的公告資料",
     "$id": "https://api.schweb.pan93.com/schemas/announcement.json",
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "$ref": "#/definitions/AnnouncementEntry",
     "definitions": {
         "AnnouncementEntry": {
@@ -8,9 +9,12 @@
             "additionalProperties": false,
             "properties": {
                 "content": {
-                    "title": "公告內容",
-                    "description": "已經使用 `sanitize-html` 清理內容。",
-                    "type": "string"
+                    "title": "公告內文",
+                    "description": "已經使用 `sanitize-html` 清理及 `minify-html` 壓縮內容。",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 },
                 "attachments": {
                     "title": "公告的附件名單",
@@ -34,19 +38,24 @@
                 "date": {
                     "title": "公告的發布日期",
                     "type": "string"
+                },
+                "external": {
+                    "title": "公告是否是外部連結？",
+                    "description": "如果連到外部連結，則不建立公告完整資料，取用者可以直接將使用者導向 `href` 的連結。",
+                    "type": "boolean"
                 }
             },
             "required": [
                 "attachments",
                 "category",
-                "content",
                 "date",
+                "external",
                 "href",
                 "title"
             ]
         },
         "AnnouncementAttachment": {
-            "title": "公告的附件",
+            "title": "公告附件",
             "type": "object",
             "properties": {
                 "name": {
