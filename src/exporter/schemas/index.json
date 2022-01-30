@@ -1,7 +1,7 @@
 {
+    "title": "公告索引中的簡短公告資訊",
     "$id": "https://api.schweb.pan93.com/schemas/index.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "公告索引中的簡短公告資訊",
     "type": "object",
     "additionalProperties": {
         "$ref": "#/definitions/AnnouncementIndexEntry"
@@ -10,31 +10,36 @@
         "AnnouncementIndexEntry": {
             "type": "object",
             "properties": {
-                "id": {
-                    "title": "公告 ID",
-                    "description": "`/announcements/{id}.json` 可以取得機器易讀的公告完整資料",
-                    "type": "string"
-                },
                 "title": {
                     "title": "公告標題",
                     "type": "string"
                 },
-                "date": {
-                    "title": "公告發布日期",
+                "href": {
+                    "title": "公告指向的連結",
                     "type": "string"
                 },
-                "href": {
-                    "title": "連到校網的連結",
+                "date": {
+                    "title": "公告的發布日期",
+                    "type": "string"
+                },
+                "external": {
+                    "title": "公告是否是外部連結？",
+                    "description": "如果連到外部連結，則不建立公告完整資料，取用者可以直接將使用者導向 `href` 的連結。",
+                    "type": "boolean"
+                },
+                "id": {
+                    "title": "公告 ID",
+                    "description": "`/announcements/{id}.json` 可以取得機器易讀的公告完整資料。見 announcement.json。",
                     "type": "string"
                 }
             },
             "required": [
-                "id",
-                "title",
                 "date",
-                "href"
-            ],
-            "additionalProperties": false
+                "external",
+                "href",
+                "id",
+                "title"
+            ]
         }
     }
 }
