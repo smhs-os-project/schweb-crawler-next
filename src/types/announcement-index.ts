@@ -1,4 +1,4 @@
-import { AnnouncementEntry } from "./announcement-entry";
+import { AnnouncementInfo } from "./announcement-entry";
 
 /**
  * 公告索引中的簡短公告資訊
@@ -9,7 +9,7 @@ export type AnnouncementIndexEntry = {
      *
      * `/announcements/{id}.json` 可以取得機器易讀的公告完整資料。
      *
-     * @see AnnouncementEntry
+     * @see AnnouncementInfo
      */
     id: string;
-} & Omit<AnnouncementEntry, "category">;
+} & Omit<AnnouncementInfo, "category">;
