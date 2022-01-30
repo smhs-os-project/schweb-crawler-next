@@ -34,7 +34,7 @@ export interface AnnouncementContent {
     /**
      * 公告內文。已經使用 `sanitize-html` 清理內容。
      */
-    content: string;
+    content?: string | null;
     /**
      * 公告的附件名單。
      */
@@ -58,4 +58,4 @@ export interface AnnouncementAttachment {
 /**
  * 一個完整的公告資料。
  */
-export type AnnouncementEntry = AnnouncementInfo & Partial<AnnouncementContent>;
+export type AnnouncementEntry = AnnouncementInfo & AnnouncementContent;
