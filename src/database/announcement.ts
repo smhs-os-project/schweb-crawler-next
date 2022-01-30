@@ -76,7 +76,10 @@ export class AnnouncementDatabase {
     postAnnouncementInfo(announcement: AnnouncementInfo): UUID {
         const uuid = this.uuidGenerator.generateAnnouncementUUID(announcement);
 
-        this.stageDataset.set(uuid, announcement);
+        this.stageDataset.set(uuid, {
+            attachments: [],
+            ...announcement,
+        });
 
         return uuid;
     }
@@ -123,10 +126,8 @@ export class AnnouncementDatabase {
         uuid: UUID,
         attachments: AnnouncementAttachment[]
     ): UUID {
-        this.stageDataset.set(uuid, {
-            ...this.retrieveAnnouncement(uuid),
-            attachments,
-        });
+        const announcement = this.retrieveAnnouncement(uuid);
+        announcement.attachments = attachments;
 
         return uuid;
     }
