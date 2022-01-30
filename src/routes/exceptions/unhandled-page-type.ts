@@ -1,4 +1,4 @@
-import type { PageType } from "../../types";
+import type { PageType } from "../../types/router-types";
 
 export class UnhandledPageType extends Error {
     constructor(public readonly pageType: PageType) {

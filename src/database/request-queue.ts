@@ -1,6 +1,6 @@
 import type { RequestQueue } from "apify";
 import type TypedEventEmitter from "typed-emitter";
-import type { PageType } from "../types";
+import type { PageType } from "../types/router-types";
 
 export type RequestQueueEventMap = {
     pushQueue: (

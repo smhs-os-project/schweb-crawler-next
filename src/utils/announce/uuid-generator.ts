@@ -1,5 +1,5 @@
 import { v5 as uuidv5 } from "uuid";
-import { AnnouncementEntry } from "../../types/announcement-entry";
+import { AnnouncementInfo } from "../../types/announcement-entry";
 
 /**
  * 與分類相關的 namespace。
@@ -21,7 +21,7 @@ export class AnnouncementUUIDGenerator {
     /**
      * 公告項目 UUID cache。
      */
-    private announcementCache: Map<AnnouncementEntry, UUID> = new Map();
+    private announcementCache: Map<AnnouncementInfo, UUID> = new Map();
 
     /**
      * 從快取取出資料。
@@ -62,7 +62,7 @@ export class AnnouncementUUIDGenerator {
      *
      * @param announcement 公告項目。
      */
-    generateAnnouncementUUID(announcement: AnnouncementEntry): UUID {
+    generateAnnouncementUUID(announcement: AnnouncementInfo): UUID {
         return this.retrieve(this.announcementCache, announcement, () =>
             uuidv5(
                 `${announcement.title} @ ${announcement.date}`,

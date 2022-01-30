@@ -1,6 +1,6 @@
 import type { CheerioHandlePageInputs } from "apify";
 import apify, { utils } from "apify";
-import { AnnouncementEntryInfo } from "../../types";
+import { AnnouncementInfo } from "../../types/announcement-entry";
 import { Handler, PageType } from "../../types/router-types";
 import { BaseHandler } from "../base-handler";
 
@@ -100,7 +100,7 @@ function* getAnnouncements(
     $module: cheerio.Cheerio,
     category: string,
     moduleSrcUrl: string
-): Generator<AnnouncementEntryInfo, void> {
+): Generator<AnnouncementInfo, void> {
     const $items = $module.find(".d-item");
 
     for (const item of $items) {
