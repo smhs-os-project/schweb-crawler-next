@@ -1,8 +1,8 @@
 {
-    "$id": "https://api.schweb.pan93.com/schemas/available_category.json",
-    "$schema": "https://json-schema.org/draft-07/schema",
     "title": "分類名單",
     "description": "可供您在 index.json 取用的分類名單。",
+    "$id": "https://api.schweb.pan93.com/schemas/available_category.json",
+    "$schema": "https://json-schema.org/draft-07/schema",
     "type": "object",
     "properties": {
         "updateAt": {
@@ -11,11 +11,6 @@
             "description": "是 Unix 時間戳記。"
         },
         "data": {
-            "$ref": "#/definitions/Data"
-        }
-    },
-    "definitions": {
-        "Data": {
             "title": "分類名單",
             "type": "array",
             "items": {

@@ -3,6 +3,13 @@
     "$id": "https://api.schweb.pan93.com/schemas/index.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
+    "properties": {
+        "updateAt": {
+            "type": "number",
+            "title": "資料更新時間",
+            "description": "是 Unix 時間戳記。"
+        }
+    },
     "additionalProperties": {
         "$ref": "#/definitions/AnnouncementIndexEntry"
     },
