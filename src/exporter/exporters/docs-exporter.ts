@@ -5,6 +5,9 @@ import { ExporterAbstract } from "../exporter.abstract";
 
 export class DocsExporter extends ExporterAbstract implements Exporter {
     async export(dataDir: string): Promise<void> {
-        await copyFile(join(__dirname, "..", "data", "api-help.md"), dataDir);
+        await copyFile(
+            join(__dirname, "..", "data", "api-help.md"),
+            join(dataDir, "api-help.md")
+        );
     }
 }
