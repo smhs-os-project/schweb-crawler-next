@@ -118,7 +118,7 @@ async function main() {
 
     const crawler = new Apify.CheerioCrawler({
         requestQueue,
-        handlePageFunction: router.handle,
+        handlePageFunction: (inputs) => router.handle(inputs),
         ignoreSslErrors: true,
     });
 
