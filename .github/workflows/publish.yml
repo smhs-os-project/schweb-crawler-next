@@ -26,7 +26,7 @@ jobs:
               with:
                   path: |
                       ./apify_storage
-                  key: v1-apify-storage
+                  key: v1-r2-apify-storage
             - name: Retrieving dependencies
               run: yarn
             - name: Build crawler
