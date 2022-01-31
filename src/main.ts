@@ -1,83 +1,137 @@
-// This is the main Node.js source code file of your actor.
-// It is referenced from the "scripts" section of the package.json file,
-// so that it can be started by running "npm start".
+import { join } from "path";
 
-// Include Apify SDK. For more information, see https://sdk.apify.com/
-import Apify, { CheerioHandlePage } from "apify";
-import { constructIndex, copySchemas } from "./exporter";
-import {
-    handleAnnouncementPageFunction,
-    handleRootPageFunction,
-} from "./scrapers";
-import { UserData, PageType, ScraperContext } from "./types";
+import Apify from "apify";
+import type TypedEventEmitter from "typed-emitter";
+import { PageType } from "./types/router-types";
+
+import { AnnouncementDatabase } from "./database/announcement";
+import { AnnouncementUUIDGenerator } from "./utils/announce/uuid-generator";
+import { registerRequestQueue } from "./database/request-queue";
+import { newEventEmitter } from "./event/emitter";
+
+import { RouterBuilder } from "./routes/router.builder";
+import { ExportersBuilder } from "./exporter/exporters.builder";
+
+import { AnnouncementHandler } from "./routes/handlers/announcement";
+import { HomepageHandler } from "./routes/handlers/homepage";
+
+import { AnnouncementExporter } from "./exporter/exporters/announcement-exporter";
+import { DocsExporter } from "./exporter/exporters/docs-exporter";
+import { IndexExporter } from "./exporter/exporters/index-exporter";
+
+import type { AnnouncementEventMap } from "./database/announcement";
+import type { AnnouncementEntry } from "./types/announcement-entry";
+import type { TypedDataset } from "./types/typed-dataset";
+import type { AvailableEvents } from "./event/emitter";
 
 const {
     utils: { log },
 } = Apify;
+
 interface Schema {
     smhsUrl: string;
 }
 
-Apify.main(async () => {
-    // Get input of the actor.
-    // If you'd like to have your input checked and have Apify display
-    // a user interface for it, add INPUT_SCHEMA.json file to your actor.
-    // For more information, see https://apify.com/docs/actor/input-schema
+const DATA_DIR = join(__dirname, "..", "data");
 
-    // Open a named dataset
-    // const announcementsDataset = await Apify.openDataset("announcements");
+async function constructAnnouncementDatabase(
+    uuidGenerator: AnnouncementUUIDGenerator,
+    eventEmitter: TypedEventEmitter<AnnouncementEventMap>
+) {
+    const announcementDataset = await Apify.openDataset("announcements");
 
-    const configuration = (await Apify.getInput()) as Schema;
+    return new AnnouncementDatabase(
+        // FIXME: validation
+        announcementDataset as TypedDataset<AnnouncementEntry>,
+        uuidGenerator,
+        eventEmitter
+    );
+}
 
-    /**
-     * 抓下的所有公告。
-     */
-    const announcementsDataset = await Apify.openDataset("announcements");
-
+async function constructRequestQueue(
+    eventEmitter: TypedEventEmitter<AnnouncementEventMap>
+) {
     const requestQueue = await Apify.openRequestQueue();
-    await requestQueue.addRequest({
-        url: configuration.smhsUrl,
-    });
+    registerRequestQueue(requestQueue, eventEmitter);
 
-    const handlePageFunction: CheerioHandlePage = async (requestInputs) => {
-        const userData = requestInputs.request.userData as UserData;
-        const scraperContext: ScraperContext = {
-            requestQueue,
-            datasets: {
-                announcements: announcementsDataset,
-            },
-        };
+    return requestQueue;
+}
 
-        userData.type = userData.type ?? PageType.Root;
+function constructRouter(emitter: TypedEventEmitter<AvailableEvents>) {
+    return new RouterBuilder()
+        .setEmitter(emitter)
+        .addRoute(PageType.Homepage, HomepageHandler)
+        .addRoute(PageType.Announcement, AnnouncementHandler)
+        .build();
+}
 
-        log.debug(`Received a ${userData.type} event.`);
+function constructExporters(
+    uuidGenerator: AnnouncementUUIDGenerator,
+    dataset: TypedDataset<AnnouncementEntry>
+) {
+    return new ExportersBuilder()
+        .setDataset(dataset)
+        .setUUIDGenerator(uuidGenerator)
+        .addExporter(IndexExporter)
+        .addExporter(DocsExporter)
+        .addExporter(AnnouncementExporter)
+        .build();
+}
 
-        switch (userData.type) {
-            case PageType.Root:
-                await handleRootPageFunction(scraperContext, requestInputs);
-                break;
-            case PageType.Announcement:
-                await handleAnnouncementPageFunction(
-                    scraperContext,
-                    requestInputs
-                );
-                break;
-            default:
-                log.warning(`invalid page type: ${userData.type}`);
-                break;
-        }
-    };
+async function main() {
+    /**
+     * Initialization
+     */
+    log.debug("initiation: constructing basic components");
+    const eventEmitter = newEventEmitter();
+    const uuidGenerator = new AnnouncementUUIDGenerator();
 
-    // Set up the crawler, passing a single options object as an argument.
+    log.debug(
+        "initiation: scheduling the construction of announcement database [Init-Task-1]"
+    );
+    const dbConstructionSubmission = constructAnnouncementDatabase(
+        uuidGenerator,
+        eventEmitter
+    );
+    log.debug("initiation: scheduling the construction of request queue");
+    const requestQueueConstructionSubmission =
+        constructRequestQueue(eventEmitter);
+    log.debug("initiation: scheduling getting the input");
+    const configurationSubmission = (await Apify.getInput()) as Schema;
+
+    log.debug("initiation: running the scheduled tasks parallelly");
+    const [announcementDatabase, requestQueue, configuration] =
+        await Promise.all([
+            dbConstructionSubmission,
+            requestQueueConstructionSubmission,
+            configurationSubmission,
+        ]);
+
+    await requestQueue.addRequest({ url: configuration.smhsUrl });
+
+    log.debug("initiation: constructing router, crawler and exporter");
+    const router = constructRouter(eventEmitter);
+    const exporters = constructExporters(
+        uuidGenerator,
+        announcementDatabase.Dataset
+    );
+
     const crawler = new Apify.CheerioCrawler({
         requestQueue,
-        handlePageFunction,
+        handlePageFunction: router.handle,
         ignoreSslErrors: true,
     });
 
+    log.info("Running crawler");
     await crawler.run();
 
-    log.info("Creating index and announcement file...");
-    await Promise.all([constructIndex(announcementsDataset), copySchemas()]);
-    log.info("Created successfully.");
-});
+    log.info("Syncing database");
+    await announcementDatabase.sync();
+
+    log.info("Exporting database");
+    await exporters.export(DATA_DIR);
+
+    log.info("All done!");
+}
+
+Apify.main(main);
