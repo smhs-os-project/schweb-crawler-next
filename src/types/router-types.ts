@@ -7,7 +7,7 @@ export enum PageType {
     /**
      * 首頁
      */
-    Root = "root",
+    Homepage = "homepage",
     /**
      * 公告頁
      */
