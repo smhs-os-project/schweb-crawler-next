@@ -42,7 +42,9 @@
         },
         "AnnouncementIndex": {
             "values": {
-                "ref": "AnnouncementIndexEntry"
+                "elements": {
+                    "ref": "AnnouncementIndexEntry"
+                }
             }
         }
     },
