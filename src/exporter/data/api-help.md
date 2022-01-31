@@ -8,12 +8,12 @@
 
 ### GET `/index.json`
 
-包含所有公告的簡要資訊。[JSON Schema 見此](./schemas/index.json)。
+包含所有公告的簡要資訊。[JSON Type Definition 見此](https://github.com/smhs-os-project/schweb-crawler-jtd/blob/main/index-response.jtd.yml)。
 
 ### GET `/available_category.json`
 
-回傳所有公告分類。[JSON Schema 見此](./schemas/available_category.json)。
+回傳所有公告分類。[JSON Type Definition 見此](https://github.com/smhs-os-project/schweb-crawler-jtd/blob/main/categories-response.jtd.yml)。
 
 ### GET `/announcements/<公告 ID>.json`
 
-回傳某個公告的內容、附件等詳細資料。[JSON Schema 見此](./schemas/announcement.json)。
+回傳某個公告的內容、附件等詳細資料。[JSON Type Definition 見此](https://github.com/smhs-os-project/schweb-crawler-jtd/blob/main/announcement-entry-response.jtd.yml)。
