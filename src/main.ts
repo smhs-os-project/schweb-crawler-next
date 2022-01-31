@@ -107,7 +107,12 @@ async function main() {
             configurationSubmission,
         ]);
 
-    await requestQueue.addRequest({ url: configuration.smhsUrl });
+    await requestQueue.addRequest({
+        url: configuration.smhsUrl,
+        userData: {
+            type: PageType.Homepage,
+        },
+    });
 
     log.debug("initiation: constructing router, crawler and exporter");
     const router = constructRouter(eventEmitter);
