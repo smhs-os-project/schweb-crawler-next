@@ -48,7 +48,7 @@ export class HomepageHandler extends HandlerAbstract implements Handler {
             const category = getModuleName($module);
 
             // 忽略照片類模組
-            if (category !== "活動照") {
+            if (!category.includes("活動照")) {
                 log.info(`[HomepageHandler] Processing module: ${category}`);
                 promiseQueue.push(
                     this.announcementModuleHandler({
