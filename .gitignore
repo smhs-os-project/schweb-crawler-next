@@ -15,4 +15,6 @@ apify_storage
 
 .DS_Store
 /reverse_proxy/caddy
-/data/
+
+/data/*
+!/data/.gitkeep
