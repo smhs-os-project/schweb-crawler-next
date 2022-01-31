@@ -1,33 +1,50 @@
-# My beautiful actor
+# SMHS 公告爬蟲
 
-The `README.md` file contains a documentation what your actor does and how to use it,
-which is then displayed in the app or Apify Store. It's always a good
-idea to write a good `README.md`, in a few months not even you
-will remember all the details about the actor.
+這是爬取 SMHS 目前最新公告的爬蟲。
 
-You can use [Markdown](https://www.markdownguide.org/cheat-sheet)
-language for rich formatting.
+這個爬蟲主打工程化設計——架構分明、設計模組化，方便您將爬蟲移植到任何環境。
 
-## Documentation reference
+## 使用
 
-- [Apify SDK](https://sdk.apify.com/)
-- [Apify Actor documentation](https://docs.apify.com/actor)
-- [Apify CLI](https://docs.apify.com/cli)
+### 定期自動抓取的 API
 
-## Writing a README
+大部分使用者應不需要自行爬取，可逕行前往 [SMHS 公告 API](https://api.schweb.pan93.com) 取得最近公告。
 
-See our tutorial on [writing READMEs for your actors](https://help.apify.com/en/articles/2912548-how-to-write-great-readme-for-your-actors) if you need more inspiration.
+### 自行爬取
 
-### Table of contents
+```bash
+# 抓下爬蟲
+git clone --recursive https://github.com/smhs-os-project/schweb-crawler-next
 
-If your README requires a table of contents, use the template below and make sure to keep the `<!-- toc start -->` and `<!-- toc end -->` markers.
+# 安裝依賴
+yarn
 
-<!-- toc start -->
-- Introduction
-- Use Cases
-  - Case 1
-  - Case 2
-- Input
-- Output
-- Miscellaneous
- <!-- toc end -->
+# 編譯 TypeScript
+yarn build
+
+# 執行
+yarn start:prod
+```
+
+## 開發
+
+```bash
+yarn
+yarn start:dev
+```
+
+### 更新 Schema
+
+Schema [可從本處取得](https://github.com/smhs-os-project/schweb-crawler-jtd)。
+
+```bash
+yarn build:schema
+```
+
+## 授權
+
+GPL-3.0
+
+## 作者
+
+- pan93412 <pan93412@gmail.com>
