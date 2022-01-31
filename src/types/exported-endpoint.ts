@@ -3,24 +3,17 @@ import type {
     AnnouncementIndex,
     AvailableCategories,
 } from "./announcement-index";
-import type { schemaURI } from "../exporter/schema-path";
 
 /**
  * Endpoint 應該回應的資料格式
  */
 export interface EndpointResponse<T> {
     /**
-     * JSON Schema 的地址。
-     *
-     * @see schemaURI
-     */
-    $schema: typeof schemaURI[keyof typeof schemaURI];
-    /**
      * 資料更新時間
      *
      * 是 Unix 時間戳記。
      */
-    updateAt: number;
+    updateAt: string;
     /**
      * 主資料
      */

@@ -1,0 +1,92 @@
+{
+    "metadata": {
+        "git-commit": "b662fa67ec3e77eb684b084e067969fa83bf1ac9"
+    },
+    "definitions": {
+        "AnnouncementEntry": {
+            "metadata": {
+                "description": "`getAnnouncements()` 回傳的公告資訊"
+            },
+            "properties": {
+                "category": {
+                    "metadata": {
+                        "description": "公告類別"
+                    },
+                    "type": "string"
+                },
+                "title": {
+                    "metadata": {
+                        "description": "公告標題"
+                    },
+                    "type": "string"
+                },
+                "href": {
+                    "metadata": {
+                        "description": "公告連結"
+                    },
+                    "type": "string"
+                },
+                "date": {
+                    "metadata": {
+                        "description": "公告日期"
+                    },
+                    "type": "string"
+                },
+                "external": {
+                    "metadata": {
+                        "description": "是否為外部連結\n\n如果連到外部連結，則不建立公告完整資料，\n取用者可以直接將使用者導向 `href` 的連結。"
+                    },
+                    "type": "boolean"
+                },
+                "content": {
+                    "metadata": {
+                        "description": "公告內容\n\n已經使用 `sanitize-html` 清理及 `minify-html` 壓縮內容。"
+                    },
+                    "type": "string",
+                    "nullable": true
+                },
+                "attachments": {
+                    "metadata": {
+                        "description": "公告附件清單"
+                    },
+                    "elements": {
+                        "ref": "AnnouncementAttachment"
+                    }
+                }
+            }
+        },
+        "AnnouncementAttachment": {
+            "metadata": {
+                "description": "公告附件資料"
+            },
+            "properties": {
+                "name": {
+                    "metadata": {
+                        "description": "附件名稱"
+                    },
+                    "type": "string"
+                },
+                "href": {
+                    "metadata": {
+                        "description": "附件連結"
+                    },
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "properties": {
+        "updateAt": {
+            "metadata": {
+                "description": "更新時間"
+            },
+            "type": "timestamp"
+        },
+        "data": {
+            "metadata": {
+                "description": "公告資料"
+            },
+            "ref": "AnnouncementEntry"
+        }
+    }
+}

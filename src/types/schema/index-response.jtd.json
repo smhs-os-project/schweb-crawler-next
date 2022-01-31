@@ -1,0 +1,63 @@
+{
+    "metadata": {
+        "git-commit": "b662fa67ec3e77eb684b084e067969fa83bf1ac9"
+    },
+    "definitions": {
+        "AnnouncementIndexEntry": {
+            "metadata": {
+                "description": "公告索引中的簡短公告資訊"
+            },
+            "properties": {
+                "id": {
+                    "metadata": {
+                        "description": "公告 ID\n\n`/announcements/{id}.json` 可以取得機器易讀的公告完整資料。\n\n見 AnnouncementEntry"
+                    },
+                    "type": "string"
+                },
+                "title": {
+                    "metadata": {
+                        "description": "公告標題"
+                    },
+                    "type": "string"
+                },
+                "href": {
+                    "metadata": {
+                        "description": "公告連結"
+                    },
+                    "type": "string"
+                },
+                "date": {
+                    "metadata": {
+                        "description": "公告日期"
+                    },
+                    "type": "string"
+                },
+                "external": {
+                    "metadata": {
+                        "description": "是否為外部連結\n\n如果連到外部連結，則不建立公告完整資料，\n取用者可以直接將使用者導向 `href` 的連結。"
+                    },
+                    "type": "boolean"
+                }
+            }
+        },
+        "AnnouncementIndex": {
+            "values": {
+                "ref": "AnnouncementIndexEntry"
+            }
+        }
+    },
+    "properties": {
+        "updateAt": {
+            "metadata": {
+                "description": "更新時間"
+            },
+            "type": "timestamp"
+        },
+        "data": {
+            "metadata": {
+                "description": "公告資料"
+            },
+            "ref": "AnnouncementIndex"
+        }
+    }
+}

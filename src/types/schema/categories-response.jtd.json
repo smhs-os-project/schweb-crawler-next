@@ -1,0 +1,21 @@
+{
+    "metadata": {
+        "git-commit": "b662fa67ec3e77eb684b084e067969fa83bf1ac9"
+    },
+    "properties": {
+        "updateAt": {
+            "metadata": {
+                "description": "更新時間"
+            },
+            "type": "timestamp"
+        },
+        "data": {
+            "metadata": {
+                "description": "可取用的分類清單"
+            },
+            "elements": {
+                "type": "string"
+            }
+        }
+    }
+}
