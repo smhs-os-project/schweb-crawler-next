@@ -114,7 +114,7 @@ function* getAnnouncements(
         const date = $date.text().trim();
 
         if (title && href) {
-            const external = checkExternal(href, moduleSrcUrl);
+            const external = !checkInternal(href, moduleSrcUrl);
             yield { category, title, href, date, external };
         }
     }
@@ -122,8 +122,10 @@ function* getAnnouncements(
 
 /**
  * 檢查指定的公告條目是單純的公告，還是外連連結。
+ *
+ * @returns 如果回傳 true，則代表是公告；反之，則是外連連結。
  */
-function checkExternal(
+function checkInternal(
     announcementHref: string,
     moduleSrcUrl: string
 ): boolean {
