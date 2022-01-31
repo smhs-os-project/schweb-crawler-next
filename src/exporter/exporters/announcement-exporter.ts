@@ -7,7 +7,7 @@ import { ExporterAbstract } from "../exporter.abstract";
 import { announcementSerializer } from "../serializer";
 import { generateEndpointResponse } from "../utils";
 
-const ANNOUNCEMENT_DIR = "announcement" as const;
+const ANNOUNCEMENT_DIR = "announcements" as const;
 
 export class AnnouncementExporter extends ExporterAbstract implements Exporter {
     private generateJson(entry: AnnouncementEntry): AnnouncementEntryResponse {
