@@ -1,6 +1,7 @@
 import type { CheerioHandlePageInputs } from "apify";
 import minifyHtml from "@minify-html/js";
 import sanitizeHtml from "sanitize-html";
+import { utils } from "apify";
 import type { Handler } from "../../types/router-types";
 import { HandlerAbstract } from "../handler.abstract";
 import type { AnnouncementAttachment } from "../../types/announcement-entry";
@@ -8,6 +9,7 @@ import { SCHOOL_ROOT_HOMEPAGE } from "../../consts";
 import { InvalidUUID } from "./exceptions/invalid-uuid";
 
 const minifyConfiguration = minifyHtml.createConfiguration({});
+const { log } = utils;
 
 export class AnnouncementHandler extends HandlerAbstract implements Handler {
     protected async contentHandler({
@@ -35,6 +37,7 @@ export class AnnouncementHandler extends HandlerAbstract implements Handler {
     async process({ $: _$, request }: CheerioHandlePageInputs): Promise<void> {
         const $ = _$ as cheerio.Root;
         const { uuid } = request.userData;
+        log.info(`Processing announcement: ${uuid}`);
 
         if (!(typeof uuid === "string")) {
             throw new InvalidUUID(uuid);
