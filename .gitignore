@@ -18,3 +18,4 @@ apify_storage
 
 /data/*
 !/data/.gitkeep
+!/data/CNAME
