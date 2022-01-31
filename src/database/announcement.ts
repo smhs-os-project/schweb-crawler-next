@@ -1,3 +1,4 @@
+import Apify from "apify";
 import type TypedEventEmitter from "typed-emitter";
 import type {
     AnnouncementContent,
@@ -12,13 +13,17 @@ import {
 } from "../utils/announce/uuid-generator";
 import { UUIDNotExist } from "./exceptions/uuid-not-exist";
 
+const {
+    utils: { log },
+} = Apify;
+
 /**
  * AnnouncementDatabase 可使用的事件。
  */
 export type AnnouncementEventMap = {
     postAnnouncementInfo: (
         info: AnnouncementInfo,
-        cb?: (uuid: UUID) => void
+        cb?: (resp: [UUID, boolean]) => void
     ) => void;
     patchAnnouncementContent: (
         uuid: UUID,
@@ -34,11 +39,18 @@ export type AnnouncementEventMap = {
 
 export class AnnouncementDatabase {
     /**
-     * 存放公告的暫存資料集。
+     * 已經儲存的公告 UUID 名單
+     *
+     * 防止公告重複儲存至 data set。
+     */
+    private readonly storedDataset = new Set<UUID>();
+
+    /**
+     * 存放公告的暫存資料集
      *
      * 不先存進 data set 是為了減少 I/O 操作，加速 crawl 速度。
      */
-    private readonly stageDataset: Map<UUID, AnnouncementEntry> = new Map();
+    private readonly stageDataset = new Map<UUID, AnnouncementEntry>();
 
     constructor(
         private readonly dataset: TypedDataset<AnnouncementEntry>,
@@ -69,19 +81,33 @@ export class AnnouncementDatabase {
     }
 
     /**
+     * 檢查公告是否早已處理過
+     *
+     * @param uuid 公告的 UUID。
+     */
+    isProcessedBefore(uuid: UUID): boolean {
+        return this.storedDataset.has(uuid);
+    }
+
+    /**
      * 寫入公告資訊。
      *
-     * @param announcement
+     * @param announcement 公告
+     * @return 如果先前就已經處理過，則回傳 `[UUID, true]`，否則回傳 `[UUID, false]`。
      */
-    postAnnouncementInfo(announcement: AnnouncementInfo): UUID {
+    postAnnouncementInfo(announcement: AnnouncementInfo): [UUID, boolean] {
         const uuid = this.uuidGenerator.generateAnnouncementUUID(announcement);
+        if (this.isProcessedBefore(uuid)) {
+            log.info(`Announcement ${uuid} has been processed before.`);
+            return [uuid, true];
+        }
 
         this.stageDataset.set(uuid, {
             attachments: [],
             ...announcement,
         });
 
-        return uuid;
+        return [uuid, false];
     }
 
     /**
@@ -133,16 +159,29 @@ export class AnnouncementDatabase {
     }
 
     /**
-     * 同步 stage dataset 的資料到 Apify Dataset 中。
+     * 將 Apify Dataset 的資料載入至 stored dataset 中以便比對。
+     */
+    async load(): Promise<void> {
+        await this.dataset.forEach((item) => {
+            const uuid = this.uuidGenerator.generateAnnouncementUUID(item);
+            this.storedDataset.add(uuid);
+        });
+    }
+
+    /**
+     * 同步 stage dataset 的資料到 Apify Dataset 中
+     *
+     * 同步完成的 dataset 會載入至 stored dataset 中防止重複新增。
      */
     async sync(): Promise<void> {
         const promiseQueue = [];
 
         for (const [uuid, announcements] of this.stageDataset.entries()) {
             promiseQueue.push(
-                this.dataset
-                    .pushData(announcements)
-                    .then(() => this.stageDataset.delete(uuid))
+                this.dataset.pushData(announcements).then(() => {
+                    this.stageDataset.delete(uuid);
+                    this.storedDataset.add(uuid);
+                })
             );
         }
 

@@ -127,6 +127,9 @@ async function main() {
         ignoreSslErrors: true,
     });
 
+    log.info("Loading database");
+    await announcementDatabase.load();
+
     log.info("Running crawler");
     await crawler.run();
 

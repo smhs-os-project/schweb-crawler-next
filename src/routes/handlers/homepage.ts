@@ -27,16 +27,21 @@ export class HomepageHandler extends HandlerAbstract implements Handler {
             log.info(`Queuing announcement: ${info.title} -> ${info.href}`);
 
             const url = new URL(info.href, request.loadedUrl);
-            this.emitter.emit("postAnnouncementInfo", info, (uuid) => {
-                this.emitter.emit(
-                    "pushQueue",
-                    url.href,
-                    PageType.Announcement,
-                    {
-                        uuid,
-                    }
-                );
-            });
+            this.emitter.emit(
+                "postAnnouncementInfo",
+                info,
+                ([uuid, addedGuard]) => {
+                    if (!addedGuard)
+                        this.emitter.emit(
+                            "pushQueue",
+                            url.href,
+                            PageType.Announcement,
+                            {
+                                uuid,
+                            }
+                        );
+                }
+            );
         }
     }
 
