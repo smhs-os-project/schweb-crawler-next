@@ -1,6 +1,6 @@
 import flatstr from "flatstr";
 import path from "path";
-import { indexSerializer } from "../serializer";
+import { categoriesSerializer, indexSerializer } from "../serializer";
 import { ExporterAbstract } from "../exporter.abstract";
 import type { AnnouncementIndex } from "../../types/announcement-index";
 import type {
@@ -69,9 +69,7 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
      *
      * @param index 使用 `indexer()` 產生的索引。
      */
-    async generateCategoryJson(
-        index: AnnouncementIndex
-    ): Promise<CategoriesResponse> {
+    private generateCategoryJson(index: AnnouncementIndex): CategoriesResponse {
         return generateEndpointResponse(Object.keys(index));
     }
 
@@ -79,6 +77,7 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
         const index = await this.indexer();
 
         const json = this.generateJson(index);
+        const categories = this.generateCategoryJson(index);
         const markdown = this.generateMarkdown(index);
 
         const jsonFilePath = path.join(dataDir, "index.json");
@@ -88,7 +87,7 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
         await Promise.all([
             writeFile(jsonFilePath, indexSerializer(json)),
             writeFile(markdownFilePath, markdown),
-            writeFile(categoriesFilePath, markdown),
+            writeFile(categoriesFilePath, categoriesSerializer(categories)),
         ]);
     }
 }
