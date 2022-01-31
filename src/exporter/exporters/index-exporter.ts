@@ -51,13 +51,13 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
 這個公告資料庫可以在 SMHS 校網斷線時讓您查閱公告（目前不包含附件）。
 您亦可以撰寫自己的前端網頁對接本資料，詳情見 [api-help.md](./api-help.md)。
 
-## 公告一覽`;
+## 公告一覽\n`;
 
         for (const [category, announcements] of Object.entries(index)) {
-            buf += `### ${category}\n`;
+            buf += `\n### ${category}\n`;
 
             for (const announcement of announcements) {
-                buf += `- [${announcement.date} / ${announcement.title}](./announcements/${announcement.id}.md)`;
+                buf += `- [${announcement.date} / ${announcement.title}](./announcements/${announcement.id}.md)\n`;
             }
         }
 
