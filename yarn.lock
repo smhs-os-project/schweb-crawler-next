@@ -2235,6 +2235,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"flatstr@npm:^1.0.12":
+  version: 1.0.12
+  resolution: "flatstr@npm:1.0.12"
+  checksum: e1bb562c94b119e958bf37e55738b172b5f8aaae6532b9660ecd877779f8559dbbc89613ba6b29ccc13447e14c59277d41450f785cf75c30df9fce62f459e9a8
+  languageName: node
+  linkType: hard
+
 "flatted@npm:^3.1.0":
   version: 3.2.5
   resolution: "flatted@npm:3.2.5"
@@ -4443,6 +4450,7 @@ __metadata:
     eslint-import-resolver-node: ^0.3.6
     eslint-plugin-import: latest
     eslint-plugin-prettier: ^4.0.0
+    flatstr: ^1.0.12
     prettier: 2.5.1
     recursive-copy: ^2.0.13
     sanitize-html: ^2.6.1
