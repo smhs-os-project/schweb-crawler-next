@@ -109,6 +109,7 @@ async function main() {
 
     await requestQueue.addRequest({
         url: configuration.smhsUrl,
+        uniqueKey: `homepage@${Date.now()}`,
         userData: {
             type: PageType.Homepage,
         },
