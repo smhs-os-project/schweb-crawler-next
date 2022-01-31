@@ -1,5 +1,6 @@
 import type { CheerioHandlePageInputs } from "apify";
 import apify, { utils } from "apify";
+import { SCHOOL_ROOT_HOMEPAGE } from "../../consts";
 import { AnnouncementInfo } from "../../types/announcement-entry";
 import { Handler, PageType } from "../../types/router-types";
 import { HandlerAbstract } from "../handler.abstract";
@@ -26,7 +27,12 @@ export class HomepageHandler extends HandlerAbstract implements Handler {
         )) {
             log.info(`Queuing announcement: ${info.title} -> ${info.href}`);
 
+            // Get the link to our server to crawl.
             const url = new URL(info.href, request.loadedUrl);
+            // Set the href of announcement to school homepage
+            // so consumers can get the real URL to announcement.
+            info.href = new URL(info.href, SCHOOL_ROOT_HOMEPAGE).href;
+
             this.emitter.emit(
                 "postAnnouncementInfo",
                 info,
