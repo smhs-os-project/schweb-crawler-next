@@ -1,26 +1,29 @@
 # using multistage build, as we need dev deps to build the TS source code
 FROM node:16 AS builder
 
-# copy all files, install all dependencies (including dev deps) and build the project
+WORKDIR /workspace
+
+COPY .yarnrc.yml package.json yarn.lock ./
+COPY .yarn/ ./.yarn/
+
+RUN yarn
+
 COPY . ./
-RUN npm install \
-    && npm run build
+RUN yarn build
 
 # create final image, copy only package.json, readme and compiled code
-FROM apify/actor-node:16
-COPY --from=builder /package*.json ./
-COPY --from=builder /README.md ./
-COPY --from=builder /dist ./dist
+FROM node:16
 
-# install only prod deps
-RUN npm --quiet set progress=false \
-    && npm install --only=prod --no-optional \
-    && echo "Installed NPM packages:" \
-    && (npm list --only=prod --no-optional --all || true) \
-    && echo "Node.js version:" \
-    && node --version \
-    && echo "NPM version:" \
-    && npm --version
+WORKDIR /workspace
+
+# Copy the installed dependencies from the previous stage.
+COPY --from=builder \
+    /workspace/README.md /workspace/.yarnrc.yml /workspace/.pnp.cjs \
+    /workspace/package.json /workspace/yarn.lock \
+    ./
+COPY --from=builder /workspace/dist/ ./dist/
+COPY --from=builder /workspace/data/CNAME ./data/CNAME
+COPY --from=builder /workspace/.yarn ./.yarn/
 
 # run compiled code
-CMD npm run start:prod
+CMD yarn start:prod
