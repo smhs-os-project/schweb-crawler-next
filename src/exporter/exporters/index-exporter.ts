@@ -9,6 +9,7 @@ import type {
 } from "../../types/exported-endpoint";
 import type { Exporter } from "../../types/exporter-types";
 import { writeFile } from "../../utils/file";
+import { generateEndpointResponse } from "../utils";
 
 export class IndexExporter extends ExporterAbstract implements Exporter {
     /**
@@ -34,10 +35,7 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
      * @param index 使用 `indexer()` 產生的索引。
      */
     private generateJson(index: AnnouncementIndex): IndexResponse {
-        return {
-            updateAt: new Date().toISOString(),
-            data: index,
-        };
+        return generateEndpointResponse(index);
     }
 
     /**
@@ -74,10 +72,7 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
     async generateCategoryJson(
         index: AnnouncementIndex
     ): Promise<CategoriesResponse> {
-        return {
-            updateAt: new Date().toISOString(),
-            data: Object.keys(index),
-        };
+        return generateEndpointResponse(Object.keys(index));
     }
 
     async export(dataDir: string): Promise<void> {
