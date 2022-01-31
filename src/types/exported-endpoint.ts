@@ -1,8 +1,5 @@
 import type { AnnouncementEntry } from "./announcement-entry";
-import type {
-    AnnouncementIndex,
-    AvailableCategories,
-} from "./announcement-index";
+import type { AnnouncementIndex, Categories } from "./announcement-index";
 
 /**
  * Endpoint 應該回應的資料格式
@@ -33,4 +30,4 @@ export type IndexResponse = EndpointResponse<AnnouncementIndex>;
 /**
  * 可取用的分類清單 API 回應
  */
-export type AvailableCategoriesResponse = EndpointResponse<AvailableCategories>;
+export type CategoriesResponse = EndpointResponse<Categories>;

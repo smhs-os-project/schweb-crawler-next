@@ -3,8 +3,12 @@ import path from "path";
 import { indexSerializer } from "../serializer";
 import { ExporterAbstract } from "../exporter.abstract";
 import type { AnnouncementIndex } from "../../types/announcement-index";
-import type { IndexResponse } from "../../types/exported-endpoint";
+import type {
+    CategoriesResponse,
+    IndexResponse,
+} from "../../types/exported-endpoint";
 import type { Exporter } from "../../types/exporter-types";
+import { writeFile } from "../../utils/file";
 
 export class IndexExporter extends ExporterAbstract implements Exporter {
     /**
@@ -62,6 +66,20 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
         return flatstr(buf);
     }
 
+    /**
+     * 產生可取用的分類清單 API 回應
+     *
+     * @param index 使用 `indexer()` 產生的索引。
+     */
+    async generateCategoryJson(
+        index: AnnouncementIndex
+    ): Promise<CategoriesResponse> {
+        return {
+            updateAt: new Date().toISOString(),
+            data: Object.keys(index),
+        };
+    }
+
     async export(dataDir: string): Promise<void> {
         const index = await this.indexer();
 
@@ -69,11 +87,13 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
         const markdown = this.generateMarkdown(index);
 
         const jsonFilePath = path.join(dataDir, "index.json");
+        const categoriesFilePath = path.join(dataDir, "categories.json");
         const markdownFilePath = path.join(dataDir, "README.md");
 
         await Promise.all([
-            this.writeFile(jsonFilePath, indexSerializer(json)),
-            this.writeFile(markdownFilePath, markdown),
+            writeFile(jsonFilePath, indexSerializer(json)),
+            writeFile(markdownFilePath, markdown),
+            writeFile(categoriesFilePath, markdown),
         ]);
     }
 }
