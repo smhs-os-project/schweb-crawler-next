@@ -1,24 +1,12 @@
 import flatstr from "flatstr";
 import path from "path";
-import { getSchema } from "../serializer";
+import { indexSerializer } from "../serializer";
+import { ExporterAbstract } from "../exporter.abstract";
 import type { AnnouncementIndex } from "../../types/announcement-index";
 import type { IndexResponse } from "../../types/exported-endpoint";
 import type { Exporter } from "../../types/exporter-types";
-import { ExporterAbstract } from "../exporter.abstract";
-import { schemaURI } from "../schema-path";
-import { AjvSchema } from "../../types/ajv-schema";
 
 export class IndexExporter extends ExporterAbstract implements Exporter {
-    /**
-     * 本 Exporter 適用的 Schema
-     */
-    protected readonly schema = AjvSchema.index;
-
-    /**
-     * 本 Exporter 適用的 serializer
-     */
-    protected readonly serializer = getSchema<IndexResponse>(this.schema);
-
     /**
      * 對 dataset 進行以分類為基礎的索引
      */
@@ -43,8 +31,7 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
      */
     private generateJson(index: AnnouncementIndex): IndexResponse {
         return {
-            $schema: schemaURI[AjvSchema.index],
-            updateAt: Date.now(),
+            updateAt: new Date().toISOString(),
             data: index,
         };
     }
@@ -85,9 +72,8 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
         const markdownFilePath = path.join(dataDir, "README.md");
 
         await Promise.all([
-            this.writeFile(jsonFilePath, this.serializer(json)),
+            this.writeFile(jsonFilePath, indexSerializer(json)),
             this.writeFile(markdownFilePath, markdown),
         ]);
-        throw new Error("Method not implemented.");
     }
 }
