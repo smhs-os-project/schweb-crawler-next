@@ -4,8 +4,6 @@
     "description": "這是爬取 SMHS 目前最新公告的爬蟲。",
     "dependencies": {
         "@minify-html/js": "^0.8.0",
-        "@types/turndown": "^5.0.1",
-        "@types/uuid": "^8.3.4",
         "ajv": "^8.10.0",
         "apify": "^2.2.2",
         "cheerio": "^1.0.0-rc.10",
@@ -23,6 +21,8 @@
         "@types/cheerio": "^0.22.31",
         "@types/node": "^17.0.19",
         "@types/sanitize-html": "^2.6.2",
+        "@types/turndown": "^5.0.1",
+        "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.12.1",
         "@typescript-eslint/parser": "^5.12.1",
         "domhandler": "^4.3.0",
