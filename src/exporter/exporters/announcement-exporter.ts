@@ -1,4 +1,5 @@
 import { join } from "path";
+import TurndownService from "turndown";
 import type { AnnouncementEntry } from "../../types/announcement-entry";
 import type { AnnouncementEntryResponse } from "../../types/exported-endpoint";
 import type { Exporter } from "../../types/exporter-types";
@@ -10,6 +11,8 @@ import { generateEndpointResponse } from "../utils";
 const ANNOUNCEMENT_DIR = "announcements" as const;
 
 export class AnnouncementExporter extends ExporterAbstract implements Exporter {
+    private turndownService = new TurndownService();
+
     private generateJson(entry: AnnouncementEntry): AnnouncementEntryResponse {
         return generateEndpointResponse(entry);
     }
@@ -33,7 +36,9 @@ href: ${href}
 # [${category}] ${title}
 
 發布日期：${date}`;
-        const contentMarkdown = content ?? `請參閱 [連結](${href})`;
+        const contentMarkdown = content
+            ? this.turndownService.turndown(content)
+            : `請參閱 [連結](${href})`;
         const attachmentsMarkdown =
             attachments.length > 0
                 ? `\
