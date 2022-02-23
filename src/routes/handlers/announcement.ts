@@ -2,6 +2,7 @@ import type { CheerioHandlePageInputs } from "apify";
 import minifyHtml from "@minify-html/js";
 import sanitizeHtml from "sanitize-html";
 import { utils } from "apify";
+import type { CheerioAPI } from "cheerio/lib/load";
 import type { Handler } from "../../types/router-types";
 import { HandlerAbstract } from "../handler.abstract";
 import type { AnnouncementAttachment } from "../../types/announcement-entry";
@@ -16,7 +17,7 @@ export class AnnouncementHandler extends HandlerAbstract implements Handler {
         $,
         uuid,
     }: {
-        $: cheerio.Root;
+        $: CheerioAPI;
         uuid: string;
     }): Promise<void> {
         const content = getAnnouncementContent($);
@@ -27,15 +28,14 @@ export class AnnouncementHandler extends HandlerAbstract implements Handler {
         $,
         uuid,
     }: {
-        $: cheerio.Root;
+        $: CheerioAPI;
         uuid: string;
     }): Promise<void> {
         const attachments = getAnnouncementAttachments($);
         this.emitter.emit("patchAnnouncementContent", uuid, { attachments });
     }
 
-    async process({ $: _$, request }: CheerioHandlePageInputs): Promise<void> {
-        const $ = _$ as cheerio.Root;
+    async process({ $, request }: CheerioHandlePageInputs): Promise<void> {
         const { uuid } = request.userData;
         log.info(`Processing announcement: ${uuid}`);
 
@@ -55,7 +55,7 @@ export class AnnouncementHandler extends HandlerAbstract implements Handler {
  * @param $ 公告內頁
  * @returns 清理到只剩基本 HTML 元素的最小化 HTML 字串
  */
-export function getAnnouncementContent($: cheerio.Root): string | null {
+export function getAnnouncementContent($: CheerioAPI): string | null {
     const rawContent = $(".mcont").html();
 
     return (
@@ -75,7 +75,7 @@ export function getAnnouncementContent($: cheerio.Root): string | null {
  * 我們亦清理掉附件名稱中的「另開新視窗」文字。
  */
 export function getAnnouncementAttachments(
-    $: cheerio.Root
+    $: CheerioAPI
 ): AnnouncementAttachment[] {
     const $attachments = $(".mptattach a");
 

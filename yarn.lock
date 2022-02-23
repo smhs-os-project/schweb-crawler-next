@@ -4268,6 +4268,7 @@ __metadata:
     ajv: ^8.10.0
     apify: ^2.2.2
     cheerio: ^1.0.0-rc.10
+    domhandler: ^4.3.0
     eslint: ^8.9.0
     eslint-config-prettier: ^8.4.0
     eslint-import-resolver-node: ^0.3.6

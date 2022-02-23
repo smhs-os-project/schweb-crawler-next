@@ -1,5 +1,8 @@
 import type { CheerioHandlePageInputs } from "apify";
 import apify, { utils } from "apify";
+import { Cheerio } from "cheerio/lib/cheerio";
+import type { CheerioAPI } from "cheerio/lib/load";
+import type { Node, Element } from "domhandler";
 import { SCHOOL_ROOT_HOMEPAGE } from "../../consts";
 import { AnnouncementInfo } from "../../types/announcement-entry";
 import { Handler, PageType } from "../../types/router-types";
@@ -14,8 +17,8 @@ export class HomepageHandler extends HandlerAbstract implements Handler {
         $module,
         category,
     }: {
-        $: cheerio.Root;
-        $module: cheerio.Cheerio;
+        $: CheerioAPI;
+        $module: Cheerio<Node>;
         category: string;
         request: apify.Request;
     }): Promise<void> {
@@ -51,8 +54,7 @@ export class HomepageHandler extends HandlerAbstract implements Handler {
         }
     }
 
-    async process({ $: _$, request }: CheerioHandlePageInputs): Promise<void> {
-        const $ = _$ as cheerio.Root;
+    async process({ $, request }: CheerioHandlePageInputs): Promise<void> {
         const promiseQueue = [];
 
         for (const $module of getSpecialModules($)) {
@@ -82,7 +84,7 @@ export class HomepageHandler extends HandlerAbstract implements Handler {
  * 取得指定 DOM tree 的公告類 (special) 模組。
  * @param $ DOM tree
  */
-function* getSpecialModules($: cheerio.Root): Generator<cheerio.Cheerio, void> {
+function* getSpecialModules($: CheerioAPI): Generator<Cheerio<Element>, void> {
     const $categories = $(".module.module-special");
 
     for (const category of $categories) {
@@ -95,7 +97,7 @@ function* getSpecialModules($: cheerio.Root): Generator<cheerio.Cheerio, void> {
  *
  * @param $module 模組
  */
-function getModuleName($module: cheerio.Cheerio): string {
+function getModuleName($module: Cheerio<Node>): string {
     const title = $module.find("h2.mt-title").text();
     return title;
 }
@@ -108,8 +110,8 @@ function getModuleName($module: cheerio.Cheerio): string {
  * @param moduleSrcUrl 這個公告模組是從何站台抓下來的？
  */
 function* getAnnouncements(
-    $: cheerio.Root,
-    $module: cheerio.Cheerio,
+    $: CheerioAPI,
+    $module: Cheerio<Node>,
     category: string,
     moduleSrcUrl: string
 ): Generator<AnnouncementInfo, void> {
