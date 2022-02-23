@@ -10,7 +10,7 @@
 
 包含所有公告的簡要資訊。[JSON Type Definition 見此](https://github.com/smhs-os-project/schweb-crawler-jtd/blob/main/index-response.jtd.yml)。
 
-### GET `/available_category.json`
+### GET `/categories.json`
 
 回傳所有公告分類。[JSON Type Definition 見此](https://github.com/smhs-os-project/schweb-crawler-jtd/blob/main/categories-response.jtd.yml)。
 
