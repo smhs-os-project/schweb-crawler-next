@@ -11,7 +11,37 @@ import type { Exporter } from "../../types/exporter-types";
 import { writeFile } from "../../utils/file";
 import { generateEndpointResponse } from "../utils";
 
+/**
+ * 日期字串。
+ *
+ * @example 2022-1-1
+ * @example 2022-01-01
+ */
+type DateString = string;
+
+/**
+ * Unix 時間戳。
+ *
+ * @example 1573430400000
+ */
+type Timestamp = number;
+
 export class IndexExporter extends ExporterAbstract implements Exporter {
+    private timestampCacheMap = new Map<string, number>();
+
+    /**
+     * 取得指定日期 (`2022-1-1`) 的 Timestamp 並自動快取。
+     */
+    private getTimestamp(rawDate: DateString): Timestamp {
+        let value = this.timestampCacheMap.get(rawDate);
+        if (!value) {
+            value = Date.parse(rawDate);
+            this.timestampCacheMap.set(rawDate, value);
+        }
+
+        return value;
+    }
+
     /**
      * 對 dataset 進行以分類為基礎的索引
      */
@@ -56,7 +86,16 @@ export class IndexExporter extends ExporterAbstract implements Exporter {
         for (const [category, announcements] of Object.entries(index)) {
             buf += `\n### ${category}\n`;
 
-            for (const announcement of announcements) {
+            const filteredSortedAnnouncements = announcements
+                .sort((a, b) => {
+                    const aT = this.getTimestamp(a.date);
+                    const bT = this.getTimestamp(b.date);
+
+                    return bT - aT;
+                })
+                .slice(0, 9);
+
+            for (const announcement of filteredSortedAnnouncements) {
                 buf += `- [${announcement.date} / ${announcement.title}](./announcements/${announcement.id}.md)\n`;
             }
         }
