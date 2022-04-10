@@ -17,20 +17,20 @@
 git clone --recursive https://github.com/smhs-os-project/schweb-crawler-next
 
 # 安裝依賴
-yarn
+pnpm i
 
 # 編譯 TypeScript
-yarn build
+pnpm build
 
 # 執行
-yarn start:prod
+pnpm start:prod
 ```
 
 ## 開發
 
 ```bash
-yarn
-yarn start:dev
+pnpm i
+pnpm start:dev
 ```
 
 ### 更新 Schema
@@ -38,7 +38,7 @@ yarn start:dev
 Schema [可從本處取得](https://github.com/smhs-os-project/schweb-crawler-jtd)。
 
 ```bash
-yarn build:schema
+pnpm build:schema
 ```
 
 ## 授權

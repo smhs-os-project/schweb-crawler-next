@@ -20,7 +20,7 @@ jobs:
               uses: actions/setup-node@master
               with:
                   node-version: 16
-                  cache: "yarn"
+                  cache: "pnpm"
             - name: Cache apify_storage
               uses: actions/cache@v2
               with:
@@ -28,9 +28,9 @@ jobs:
                       ./apify_storage
                   key: v1-r2-apify-storage
             - name: Retrieving dependencies
-              run: yarn
+              run: pnpm i
             - name: Build crawler
-              run: yarn build
+              run: pnpm build
             - name: Initiate INPUT store
               run: |
                   mkdir -p ./apify_storage/key_value_stores/default
@@ -41,7 +41,7 @@ jobs:
                   }
                   EOF
             - name: Start crawler
-              run: yarn start:prod
+              run: pnpm start:prod
             - name: Pushes to another repository
               uses: cpina/github-action-push-to-another-repository@main
               env:
