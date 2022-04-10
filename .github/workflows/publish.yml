@@ -16,6 +16,7 @@ jobs:
 
         steps:
             - uses: actions/checkout@master
+            - uses: pnpm/action-setup@v2.1.0
             - name: Use Node.js 16.x
               uses: actions/setup-node@master
               with:
