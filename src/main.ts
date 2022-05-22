@@ -29,7 +29,7 @@ const {
 } = Apify;
 
 interface Schema {
-    smhsUrl: string;
+    smhsUrl?: string;
 }
 
 const DATA_DIR = join(__dirname, "..", "data");
@@ -108,7 +108,7 @@ async function main() {
         ]);
 
     await requestQueue.addRequest({
-        url: configuration.smhsUrl,
+        url: configuration?.smhsUrl ?? "https://www.smhs.kh.edu.tw",
         uniqueKey: `homepage@${Date.now()}`,
         userData: {
             type: PageType.Homepage,
