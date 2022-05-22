@@ -1,6 +1,6 @@
 {
     "name": "schweb-crawler-next",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "這是爬取 SMHS 目前最新公告的爬蟲。",
     "dependencies": {
         "@minify-html/js": "^0.8.0",
