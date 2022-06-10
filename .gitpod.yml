@@ -10,5 +10,5 @@ tasks:
         name: Run reverse proxy
         command: |
             pushd reverse_proxy
-            OS="linux" ARCH="amd64" bash start.sh
-            popd reverse_proxy
+            OS="linux" ARCH="amd64" sudo bash start.sh
+            popd
